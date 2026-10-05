@@ -1,0 +1,409 @@
+:root {
+  color-scheme: light dark;
+  --bg: #f5f4f1;
+  --surface: #ffffff;
+  --line: #e2e0da;
+  --text: #1d1c1a;
+  --muted: #7a776f;
+  --accent: #d9432f;
+  --accent-soft: #fdeeeb;
+  --off-surface: #f0efeb;
+
+  --normal-bg: #eef1f5;
+  --normal-bar: #8792a2;
+  --swapped-bg: #ece8ff;
+  --swapped-bar: #6b53d1;
+  --extra-bg: #e0f4e7;
+  --extra-bar: #2c9a57;
+  --room-bg: #fff0d1;
+  --room-bar: #cf8300;
+  --off-bg: #e9e8e4;
+  --off-bar: #aaa79f;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #161615;
+    --surface: #1f1f1d;
+    --line: #33322f;
+    --text: #ecebe7;
+    --muted: #96938a;
+    --accent: #ff6b57;
+    --accent-soft: #3a211d;
+    --off-surface: #1a1a18;
+
+    --normal-bg: #2a2e35;
+    --normal-bar: #7d8898;
+    --swapped-bg: #2d2850;
+    --swapped-bar: #9a86ff;
+    --extra-bg: #1c3a28;
+    --extra-bar: #4cc27c;
+    --room-bg: #42320f;
+    --room-bar: #f0a92a;
+    --off-bg: #2a2927;
+    --off-bar: #6f6c65;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Noto Sans JP", sans-serif;
+  font-size: 15px;
+  line-height: 1.4;
+}
+
+.page {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 24px 16px 32px;
+}
+
+.bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.bar h1 {
+  margin: 0;
+  font-size: 1.35rem;
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+}
+
+.nav {
+  display: flex;
+  gap: 6px;
+}
+
+.nav button {
+  min-width: 36px;
+  height: 34px;
+  padding: 0 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.nav button:hover {
+  border-color: var(--muted);
+}
+
+.nav button:focus-visible,
+.foot a:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.nav #prev,
+.nav #next {
+  padding: 0;
+  font-size: 1.25rem;
+  line-height: 1;
+}
+
+.summary {
+  min-height: 1.4em;
+  margin: 10px 0 16px;
+  color: var(--muted);
+}
+
+.summary.changed {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.summary.error {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+/* 列数は app.js が --days で渡す */
+.grid {
+  display: grid;
+  grid-template-columns: 4.25rem repeat(var(--days, 5), minmax(0, 1fr));
+  gap: 1px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--line);
+}
+
+.grid.loading {
+  opacity: 0.6;
+}
+
+.cell {
+  min-width: 0;
+  background: var(--surface);
+}
+
+.day-head {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 10px 4px 8px;
+}
+
+.day-head .weekday {
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
+.day-head .date {
+  display: grid;
+  place-items: center;
+  min-width: 2rem;
+  height: 2rem;
+  padding: 0 6px;
+  border-radius: 999px;
+  font-size: 1.05rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.day-head.today .weekday {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.day-head.today .date {
+  background: var(--accent);
+  color: #fff;
+}
+
+.day-note {
+  min-height: 1.3rem;
+  padding: 1px 8px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+.day-note.swapped {
+  background: var(--swapped-bg);
+  color: var(--swapped-bar);
+}
+
+.day-note.off {
+  background: var(--off-bg);
+  color: var(--muted);
+}
+
+.day-note.holiday {
+  color: var(--accent);
+}
+
+.period-head {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  padding: 6px 2px;
+  color: var(--muted);
+  font-size: 0.7rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.period-head .number {
+  color: var(--text);
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
+.period-head.now {
+  box-shadow: inset 3px 0 0 var(--accent);
+}
+
+.period-head.now .number {
+  color: var(--accent);
+}
+
+.slot {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-height: 5.25rem;
+  padding: 4px;
+}
+
+.slot.off-day {
+  background: var(--off-surface);
+}
+
+.slot.today {
+  background: color-mix(in srgb, var(--accent-soft) 45%, var(--surface));
+}
+
+.slot.now {
+  box-shadow: inset 0 0 0 2px var(--accent);
+}
+
+.session {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 6px 8px;
+  border-left: 3px solid var(--normal-bar);
+  border-radius: 6px;
+  background: var(--normal-bg);
+  overflow-wrap: anywhere;
+}
+
+.session .name {
+  font-weight: 600;
+}
+
+.session .meta {
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
+.session .meta s {
+  opacity: 0.7;
+}
+
+.session .badge {
+  align-self: flex-start;
+  margin-top: auto;
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+
+.session.swapped {
+  border-color: var(--swapped-bar);
+  background: var(--swapped-bg);
+}
+
+.session.swapped .badge {
+  color: var(--swapped-bar);
+}
+
+.session.extra {
+  border-color: var(--extra-bar);
+  background: var(--extra-bg);
+}
+
+.session.extra .badge {
+  color: var(--extra-bar);
+}
+
+.session.room_changed {
+  border-color: var(--room-bar);
+  background: var(--room-bg);
+}
+
+.session.room_changed .badge,
+.session.room_changed .room {
+  color: var(--room-bar);
+  font-weight: 700;
+}
+
+.session.off {
+  border-color: var(--off-bar);
+  background: var(--off-bg);
+  color: var(--muted);
+}
+
+.session.off .name {
+  font-weight: 500;
+  text-decoration: line-through;
+}
+
+.foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 14px;
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
+.foot a {
+  color: inherit;
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.legend li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.chip {
+  width: 12px;
+  height: 12px;
+  border-left: 3px solid;
+  border-radius: 3px;
+}
+
+.chip.swapped {
+  border-color: var(--swapped-bar);
+  background: var(--swapped-bg);
+}
+
+.chip.extra {
+  border-color: var(--extra-bar);
+  background: var(--extra-bg);
+}
+
+.chip.room_changed {
+  border-color: var(--room-bar);
+  background: var(--room-bg);
+}
+
+.chip.off {
+  border-color: var(--off-bar);
+  background: var(--off-bg);
+}
+
+@media (max-width: 640px) {
+  body {
+    font-size: 13px;
+  }
+
+  .page {
+    padding: 16px 8px 24px;
+  }
+
+  .bar h1 {
+    font-size: 1.15rem;
+  }
+
+  .grid {
+    grid-template-columns: 2.6rem repeat(var(--days, 5), minmax(0, 1fr));
+  }
+
+  .period-head .time {
+    display: none;
+  }
+
+  .session {
+    padding: 4px 5px;
+  }
+}

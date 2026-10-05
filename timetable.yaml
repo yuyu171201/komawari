@@ -1,0 +1,36 @@
+term:
+  start: 2026-10-05
+  end: 2027-01-29
+
+# コマ番号と時刻の対応表
+periods:
+  1: {start: "08:45", end: "10:15"}
+  2: {start: "10:30", end: "12:00"}
+  3: {start: "13:00", end: "14:30"}
+  4: {start: "14:45", end: "16:15"}
+  5: {start: "16:30", end: "18:00"}
+
+# 通常の時間割（weekday: 0=月 ... 4=金）
+# 時刻は period（コマ番号）か start/end の直接指定のどちらか一方
+classes:
+  - {name: Java演習, weekday: 0, period: 2, room: 情報1号館}
+  - {name: 機械学習, weekday: 2, period: 3, room: A101}
+
+# 例外（1行1件。同じ日付に複数行書いてよい）
+# 日本の祝日は自動で休講になるので、ここには大学独自のものだけを書く
+exceptions:
+  # 振替: その日は as_weekday の曜日の授業として扱う
+  - {date: 2026-10-21, as_weekday: 0}   # この水曜は月曜授業
+
+  # 休講: その日は授業なし（class を付けるとその授業だけ休講）
+  - {date: 2026-11-04, off: true}
+
+  # 祝日だが授業あり
+  - {date: 2026-11-23, off: false}
+
+  # 補講: extra に授業1件（period か start/end）
+  - {date: 2026-11-14, extra: {name: 機械学習, period: 4, room: A101}}
+
+  # 教室変更: class で授業名を指定（period で絞り込み可）
+  - {date: 2026-12-02, class: 機械学習, room: B202}
+  - {date: 2026-12-07, class: Java演習, period: 2, room: C303}

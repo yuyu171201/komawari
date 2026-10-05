@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>時間割</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <div class="page">
+    <header class="bar">
+      <h1 id="range">時間割</h1>
+      <nav class="nav">
+        <button id="prev" type="button" aria-label="前週" title="前週 (←)">‹</button>
+        <button id="today" type="button" title="今週 (T)">今週</button>
+        <button id="next" type="button" aria-label="翌週" title="翌週 (→)">›</button>
+      </nav>
+    </header>
+
+    <p id="summary" class="summary" role="status"></p>
+
+    <main id="grid" class="grid" aria-label="週の時間割"></main>
+
+    <footer class="foot">
+      <ul class="legend" aria-label="凡例">
+        <li><span class="chip swapped"></span>振替</li>
+        <li><span class="chip extra"></span>補講</li>
+        <li><span class="chip room_changed"></span>教室変更</li>
+        <li><span class="chip off"></span>休講</li>
+      </ul>
+      <a id="subscribe" href="/timetable.ics">カレンダーで購読</a>
+    </footer>
+  </div>
+  <script src="/static/app.js"></script>
+</body>
+</html>
