@@ -6,7 +6,10 @@
 
 ```bash
 uv sync
+cp timetable.example.yaml timetable.yaml
 ```
+
+`timetable.yaml` は自分の時間割を書くファイルで、`.gitignore` に入れてある（リポジトリには含めない）。
 
 ## 使い方
 
@@ -20,6 +23,14 @@ uv run pytest                        # テスト
 
 YAML の場所は `-c PATH` か環境変数 `KOMAWARI_CONFIG` で変えられる（既定はカレントディレクトリの `timetable.yaml`）。サーバーは YAML の更新を検知して自動で読み直す。
 
+### 授業変更の登録
+
+週ビューから、休講・教室変更・補講・振替を登録できる。登録内容は `timetable.yaml` の `exceptions` に1行ずつ追記され、手で書いたコメントや他の行はそのまま残る。
+
+- 授業をクリック: その授業を休講・教室変更にする（通常どおりに戻すのも同じ画面）
+- コマの「+」をクリック: 補講を追加する。登録済みの補講はクリックで削除できる
+- 日付をクリック: その日を振替・休講にする。祝日に授業を行う設定もここ
+
 ### カレンダーの購読
 
 `komawari serve` を起動した状態で、週ビュー右下の「カレンダーで購読」（`webcal://127.0.0.1:8000/timetable.ics`）を開くと、標準カレンダーに購読カレンダーとして追加できる。カレンダーが更新を取りに来るときにサーバーが動いている必要がある。
@@ -32,9 +43,13 @@ term: {start: 2026-10-05, end: 2027-01-29}
 periods:
   1: {start: "08:45", end: "10:15"}
 
+terms:     # 任意。ターム別の開講期間
+  3: {start: 2026-10-05, end: 2026-12-01}
+  4: {start: 2026-12-02, end: 2027-01-29}
+
 classes:   # weekday: 0=月 ... 6=日。時刻は period か start/end のどちらか一方
-  - {name: Java演習, weekday: 0, period: 2, room: 情報1号館}
-  - {name: ゼミ, weekday: 4, start: "18:10", end: "19:40"}
+  - {name: Java演習, weekday: 0, period: 2, room: 情報1号館, term: 3}   # 第3タームだけ開講
+  - {name: ゼミ, weekday: 4, start: "18:10", end: "19:40"}             # term なし = 学期全体
 
 exceptions:   # 1行1件。同じ日付に複数行書いてよい
   - {date: 2026-10-21, as_weekday: 0}                 # 振替: この日は月曜授業
@@ -45,6 +60,7 @@ exceptions:   # 1行1件。同じ日付に複数行書いてよい
   - {date: 2026-12-09, class: 機械学習, off: true}    # その授業だけ休講
 ```
 
+- 授業に `term` を書くと `terms` の期間だけ開講する。振替の日は、その日付が属するタームの授業が出る
 - 日本の祝日は `jpholiday` で自動的に休講になる。祝日に授業がある日は `off: false` か `as_weekday` を書く
 - 補講（`extra`）は日付を明示した追加なので、休みの日や学期外でも表示・出力される
 - `class` で指定した授業がその日に無い場合は、打ち間違いとして読み込みエラーになる
@@ -57,5 +73,6 @@ exceptions:   # 1行1件。同じ日付に複数行書いてよい
 | `komawari/core.py` | 展開ロジック（`expand_day` / `week_view` / `expand_term` / `week_summary`）。UI・API から独立 |
 | `komawari/ics.py` | `.ics` 生成 |
 | `komawari/cli.py` | CLI |
-| `komawari/api.py` | FastAPI（`GET /week?date=`、`GET /timetable.ics`、Web UI の配信） |
+| `komawari/editor.py` | `exceptions` の行単位の追加・削除（コメントを保ったまま YAML を書き換える） |
+| `komawari/api.py` | FastAPI（`GET /week?date=`、`GET /timetable.ics`、`POST /exceptions`、`DELETE /exceptions/{id}`、Web UI の配信） |
 | `komawari/static/` | Web UI（週ビュー） |

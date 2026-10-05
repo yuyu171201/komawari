@@ -202,3 +202,42 @@ def test_summary_at_partial_term_edges(make_cfg):
     cfg = make_cfg(term={"start": "2026-10-07", "end": "2027-01-27"})
     assert week_summary(week_view(cfg, date(2026, 10, 5))) == ["10/7(水)から授業開始"]
     assert week_summary(week_view(cfg, date(2027, 1, 25))) == ["1/27(水)で授業終了"]
+
+
+TERMS = {
+    3: {"start": "2026-10-05", "end": "2026-12-01"},
+    4: {"start": "2026-12-02", "end": "2027-01-29"},
+}
+
+
+def test_class_runs_only_in_its_term(make_cfg):
+    classes = [
+        {"name": "線形代数", "weekday": 2, "period": 1, "term": 3},
+        {"name": "統計学", "weekday": 2, "period": 1, "term": 4},
+        {"name": "プログラミング", "weekday": 2, "period": 4},  # term なし = 学期全体
+    ]
+    cfg = make_cfg(terms=TERMS, classes=classes)
+    assert names(expand_day(cfg, date(2026, 11, 25))) == [
+        ("線形代数", "normal"), ("プログラミング", "normal"),
+    ]
+    assert names(expand_day(cfg, date(2026, 12, 2))) == [
+        ("統計学", "normal"), ("プログラミング", "normal"),
+    ]
+
+
+def test_swap_uses_classes_of_the_term_on_that_date(make_cfg):
+    classes = [
+        {"name": "線形代数", "weekday": 2, "period": 1, "term": 3},
+        {"name": "統計学", "weekday": 2, "period": 1, "term": 4},
+    ]
+    cfg = make_cfg([{"date": "2026-12-04", "as_weekday": 2}], terms=TERMS, classes=classes)
+    assert names(expand_day(cfg, date(2026, 12, 4))) == [("統計学", "swapped")]
+
+
+def test_summary_mentions_a_multi_period_class_once(make_cfg):
+    classes = [
+        {"name": "実験", "weekday": 3, "period": 3},
+        {"name": "実験", "weekday": 3, "period": 4},
+    ]
+    cfg = make_cfg([{"date": "2026-10-08", "class": "実験", "off": True}], classes=classes)
+    assert week_summary(week_view(cfg, date(2026, 10, 8))) == ["木曜の実験が休講"]

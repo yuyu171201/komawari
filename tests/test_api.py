@@ -7,7 +7,7 @@ from fastapi.testclient import TestClient
 
 from komawari.api import create_app
 
-SAMPLE = Path(__file__).parent.parent / "timetable.yaml"
+SAMPLE = Path(__file__).parent / "fixtures" / "timetable.yaml"
 
 
 @pytest.fixture
@@ -106,3 +106,59 @@ def _touch_later(path, seconds=1):
     """同じ時刻内の書き込みでも更新と判定されるよう、mtime を確実に進める。"""
     stat = path.stat()
     os.utime(path, (stat.st_atime, stat.st_mtime + seconds))
+
+
+def test_week_lists_exceptions_with_ids(client):
+    data = client.get("/week", params={"date": "2026-10-21"}).json()
+    assert "Java演習" in data["class_names"]
+    (entry,) = data["days"][2]["exceptions"]
+    assert {k: v for k, v in entry.items() if k != "id"} == {"date": "2026-10-21", "as_weekday": 0}
+    assert len(entry["id"]) == 12
+
+
+def test_add_and_delete_exception(client, config_path):
+    week = {"date": "2026-10-28"}
+    res = client.post(
+        "/exceptions", json={"add": [{"date": "2026-10-28", "class": "機械学習", "off": True}]}
+    )
+    assert res.status_code == 200
+    (added,) = res.json()["added"]
+    assert client.get("/week", params=week).json()["summary"] == ["水曜の機械学習が休講"]
+    assert "- {date: 2026-10-28, class: 機械学習, off: true}" in config_path.read_text("utf-8")
+
+    assert client.delete(f"/exceptions/{added['id']}").status_code == 204
+    assert client.get("/week", params=week).json()["summary"] == []
+    assert client.delete(f"/exceptions/{added['id']}").status_code == 404
+
+
+def test_replace_exception_in_one_request(client):
+    week = {"date": "2026-10-28"}
+    first = client.post(
+        "/exceptions", json={"add": [{"date": "2026-10-28", "class": "機械学習", "room": "B202"}]}
+    ).json()["added"][0]
+    res = client.post(
+        "/exceptions",
+        json={"add": [{"date": "2026-10-28", "class": "機械学習", "off": True}], "remove": [first["id"]]},
+    )
+    assert res.status_code == 200
+    (entry,) = client.get("/week", params=week).json()["days"][2]["exceptions"]
+    assert entry["off"] is True and "room" not in entry
+
+
+def test_invalid_exception_is_rejected_with_reason(client, config_path):
+    before = config_path.read_text("utf-8")
+    res = client.post("/exceptions", json={"add": [{"date": "2026-10-28", "class": "無い授業", "off": True}]})
+    assert res.status_code == 400
+    assert "無い授業" in res.json()["detail"]
+    assert config_path.read_text("utf-8") == before
+
+
+def test_edit_requires_json_content_type(client, config_path):
+    before = config_path.read_text("utf-8")
+    res = client.post(
+        "/exceptions",
+        content='{"add": [{"date": "2026-10-28", "off": true}]}',
+        headers={"Content-Type": "text/plain"},
+    )
+    assert res.status_code in (415, 422)
+    assert config_path.read_text("utf-8") == before

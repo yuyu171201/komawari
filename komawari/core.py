@@ -78,7 +78,7 @@ def expand_day(cfg: Config, d: date) -> Day:
     sessions = []
     if in_term:
         for c in cfg.classes:
-            if c.weekday != weekday:
+            if c.weekday != weekday or not c.runs_on(d):
                 continue
             status = SWAPPED if swapped else NORMAL
             room, original_room = c.room, None
@@ -163,7 +163,8 @@ def week_summary(days: list[Day]) -> list[str]:
                 items.append(f"{wd}の{s.name}が{s.room}に教室変更")
             elif s.status == OFF and day.status != OFF:
                 items.append(f"{wd}の{s.name}が休講")
-    return items
+    # 同じ授業が1日に複数コマあると同じ文が並ぶので、1つにまとめる
+    return list(dict.fromkeys(items))
 
 
 def _short_date(d: date) -> str:

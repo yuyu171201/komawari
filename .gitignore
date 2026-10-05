@@ -3,3 +3,6 @@ __pycache__/
 .pytest_cache/
 /timetable.ics
 .DS_Store
+/timetable.yaml
+/timetable.yaml.tmp
+*.pdf

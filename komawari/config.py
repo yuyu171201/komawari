@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import hashlib
+import json
 import re
 from dataclasses import dataclass, field
 from datetime import date, datetime, time
@@ -32,6 +34,10 @@ class Course:
     weekday: int | None = None
     period: int | None = None
     room: str | None = None
+    span: tuple[date, date] | None = None  # 開講期間（`term` 指定時）。None は学期全体
+
+    def runs_on(self, d: date) -> bool:
+        return self.span is None or self.span[0] <= d <= self.span[1]
 
 
 @dataclass(frozen=True)
@@ -53,6 +59,7 @@ class DayException:
     as_weekday: int | None = None
     extras: list[Course] = field(default_factory=list)
     changes: list[ClassChange] = field(default_factory=list)
+    entries: list[dict] = field(default_factory=list)  # 各行を正規化したもの（API・編集用）
 
 
 @dataclass
@@ -103,10 +110,11 @@ def parse_config(raw: Any) -> Config:
         raise ConfigError("term: start が end より後になっています")
 
     periods = _parse_periods(raw.get("periods") or {})
+    terms = _parse_terms(raw.get("terms") or {})
 
     classes = []
     for i, c in enumerate(_sequence(raw.get("classes"), "classes")):
-        classes.append(_parse_course(c, periods, f"classes[{i}]", regular=True))
+        classes.append(_parse_course(c, periods, f"classes[{i}]", terms=terms))
 
     exceptions: dict[date, DayException] = {}
     for i, e in enumerate(_sequence(raw.get("exceptions"), "exceptions")):
@@ -132,9 +140,31 @@ def _parse_periods(raw: Any) -> dict[int, Period]:
     return periods
 
 
-def _parse_course(raw: Any, periods: dict[int, Period], where: str, *, regular: bool) -> Course:
+def _parse_terms(raw: Any) -> dict[Any, tuple[date, date]]:
+    """ターム名（3, 4 など）と開講期間の対応表。授業の `term` から参照する。"""
+    terms = {}
+    for name, span in _mapping(raw, "terms").items():
+        where = f"terms.{name}"
+        span = _mapping(span, where)
+        start = _parse_date(_require(span, "start", where), f"{where}.start")
+        end = _parse_date(_require(span, "end", where), f"{where}.end")
+        if start > end:
+            raise ConfigError(f"{where}: start が end より後になっています")
+        terms[name] = (start, end)
+    return terms
+
+
+def _parse_course(
+    raw: Any,
+    periods: dict[int, Period],
+    where: str,
+    *,
+    terms: dict[Any, tuple[date, date]] | None = None,
+) -> Course:
+    """授業1件を読む。terms を渡すと通常授業（weekday 必須・term 指定可）、なければ補講。"""
+    regular = terms is not None
     raw = _mapping(raw, where)
-    allowed = {"name", "period", "start", "end", "room"} | ({"weekday"} if regular else set())
+    allowed = {"name", "period", "start", "end", "room"} | ({"weekday", "term"} if regular else set())
     _reject_unknown(raw, allowed, where)
 
     name = str(_require(raw, "name", where))
@@ -145,15 +175,21 @@ def _parse_course(raw: Any, periods: dict[int, Period], where: str, *, regular: 
     has_times = "start" in raw or "end" in raw
     if has_period == has_times:
         raise ConfigError(f"{where}: `period` か `start`/`end` のどちらか一方を指定してください")
+    span = None
+    if raw.get("term") is not None:
+        if not isinstance(raw["term"], (int, str)) or raw["term"] not in terms:
+            raise ConfigError(f"{where}: ターム {raw['term']!r} は `terms` にありません")
+        span = terms[raw["term"]]
+
     if has_period:
         period = _parse_period_ref(raw["period"], periods, where)
-        return Course(name, periods[period].start, periods[period].end, weekday, period, room)
+        return Course(name, periods[period].start, periods[period].end, weekday, period, room, span)
 
     start = _parse_time(_require(raw, "start", where), f"{where}.start")
     end = _parse_time(_require(raw, "end", where), f"{where}.end")
     if start >= end:
         raise ConfigError(f"{where}: start が end 以降になっています")
-    return Course(name, start, end, weekday, None, room)
+    return Course(name, start, end, weekday, None, room, span)
 
 
 def _parse_exception(
@@ -164,9 +200,18 @@ def _parse_exception(
     exc = exceptions.setdefault(d, DayException(d))
     keys = set(raw) - {"date"}
 
+    entry: dict[str, Any] = {"date": d.isoformat()}
     if "extra" in keys:
         _reject_unknown(raw, {"date", "extra"}, where)
-        exc.extras.append(_parse_course(raw["extra"], periods, f"{where}.extra", regular=False))
+        course = _parse_course(raw["extra"], periods, f"{where}.extra")
+        exc.extras.append(course)
+        entry["extra"] = {"name": course.name}
+        if course.period is not None:
+            entry["extra"]["period"] = course.period
+        else:
+            entry["extra"] |= {"start": f"{course.start:%H:%M}", "end": f"{course.end:%H:%M}"}
+        if course.room is not None:
+            entry["extra"]["room"] = course.room
     elif "class" in keys:
         _reject_unknown(raw, {"date", "class", "period", "room", "off"}, where)
         period = None
@@ -177,16 +222,22 @@ def _parse_exception(
         if off == (room is not None):
             raise ConfigError(f"{where}: `class` には `room` か `off: true` のどちらか一方を指定してください")
         exc.changes.append(ClassChange(str(raw["class"]), period, room, off))
+        entry["class"] = str(raw["class"])
+        if period is not None:
+            entry["period"] = period
+        entry |= {"off": True} if off else {"room": room}
     elif "as_weekday" in keys:
         _reject_unknown(raw, {"date", "as_weekday"}, where)
         if exc.as_weekday is not None:
             raise ConfigError(f"{where}: {d} の `as_weekday` が重複しています")
         exc.as_weekday = _parse_weekday(raw["as_weekday"], f"{where}.as_weekday")
+        entry["as_weekday"] = exc.as_weekday
     elif "off" in keys:
         _reject_unknown(raw, {"date", "off"}, where)
         if exc.off is not None:
             raise ConfigError(f"{where}: {d} の `off` が重複しています")
         exc.off = _parse_bool(raw["off"], f"{where}.off")
+        entry["off"] = exc.off
     else:
         raise ConfigError(
             f"{where}: `as_weekday` / `off` / `extra` / `class` のいずれかを指定してください"
@@ -194,6 +245,21 @@ def _parse_exception(
 
     if exc.off and exc.as_weekday is not None:
         raise ConfigError(f"{where}: {d} に `off: true` と `as_weekday` の両方があります")
+    exc.entries.append(entry)
+
+
+def normalize_exception(raw: Any, periods: dict[int, Period], where: str = "exception") -> dict:
+    """例外1件だけを検証し、正規化した形（JSON にできる辞書）で返す。"""
+    scratch: dict[date, DayException] = {}
+    _parse_exception(raw, periods, scratch, where)
+    (exc,) = scratch.values()
+    return exc.entries[0]
+
+
+def entry_id(entry: dict) -> str:
+    """正規化した例外の内容から決まる id。同じ内容の行は同じ id になる。"""
+    text = json.dumps(entry, ensure_ascii=False, sort_keys=True)
+    return hashlib.sha1(text.encode("utf-8")).hexdigest()[:12]
 
 
 def _check_changes(cfg: Config) -> None:
@@ -206,6 +272,7 @@ def _check_changes(cfg: Config) -> None:
         for ch in exc.changes:
             hit = in_term and any(
                 c.weekday == weekday
+                and c.runs_on(d)
                 and c.name == ch.name
                 and (ch.period is None or c.period == ch.period)
                 for c in cfg.classes

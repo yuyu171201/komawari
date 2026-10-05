@@ -31,6 +31,19 @@
       <a id="subscribe" href="/timetable.ics">カレンダーで購読</a>
     </footer>
   </div>
+  <dialog id="dialog" class="dialog" aria-labelledby="dialog-title">
+    <form id="dialog-form">
+      <h2 id="dialog-title"></h2>
+      <p id="dialog-sub" class="dialog-sub"></p>
+      <div id="dialog-body" class="dialog-body"></div>
+      <p id="dialog-error" class="dialog-error" role="alert"></p>
+      <div class="dialog-actions">
+        <button type="button" id="dialog-cancel">キャンセル</button>
+        <button type="submit" id="dialog-submit" class="primary">保存</button>
+      </div>
+    </form>
+  </dialog>
+
   <script src="/static/app.js"></script>
 </body>
 </html>

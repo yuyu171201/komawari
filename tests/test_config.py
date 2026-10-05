@@ -5,7 +5,7 @@ import pytest
 
 from komawari.config import ConfigError, load_config, parse_text
 
-SAMPLE = Path(__file__).parent.parent / "timetable.yaml"
+SAMPLE = Path(__file__).parent / "fixtures" / "timetable.yaml"
 
 
 def test_sample_file_loads():
@@ -81,6 +81,7 @@ def test_same_date_lines_are_merged(make_cfg):
         [{"name": "X", "weekday": 7, "period": 1}],  # 曜日の範囲外
         [{"name": "X", "period": 1}],  # 曜日なし
         [{"name": "X", "weekday": 0, "period": 1, "teacher": "Y"}],  # 知らないキー
+        [{"name": "X", "weekday": 0, "period": 1, "term": 3}],  # 定義されていないターム
     ],
 )
 def test_invalid_classes(make_cfg, classes):
@@ -106,6 +107,7 @@ def test_invalid_classes(make_cfg, classes):
         [{"date": "2026-10-21", "class": "機械学習", "period": 4, "room": "B"}],  # コマ違い
         [{"date": "2027-02-03", "class": "機械学習", "room": "B"}],  # 学期外
         [{"date": "2026-10-21", "extra": {"name": "X", "weekday": 0, "period": 1}}],
+        [{"date": "2026-10-21", "extra": {"name": "X", "period": 1, "term": 3}}],
     ],
 )
 def test_invalid_exceptions(make_cfg, exceptions):
@@ -116,3 +118,18 @@ def test_invalid_exceptions(make_cfg, exceptions):
 def test_term_must_not_be_reversed(make_cfg):
     with pytest.raises(ConfigError):
         make_cfg(term={"start": "2027-01-29", "end": "2026-10-05"})
+
+
+def test_class_change_must_target_a_class_running_in_that_term(make_cfg):
+    terms = {3: {"start": "2026-10-05", "end": "2026-12-01"}}
+    classes = [{"name": "線形代数", "weekday": 2, "period": 1, "term": 3}]
+    make_cfg([{"date": "2026-11-25", "class": "線形代数", "room": "B"}], terms=terms, classes=classes)
+    with pytest.raises(ConfigError):
+        make_cfg(
+            [{"date": "2026-12-02", "class": "線形代数", "room": "B"}], terms=terms, classes=classes
+        )
+
+
+def test_terms_must_not_be_reversed(make_cfg):
+    with pytest.raises(ConfigError):
+        make_cfg(terms={3: {"start": "2026-12-01", "end": "2026-10-05"}})

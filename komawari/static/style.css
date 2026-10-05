@@ -1,47 +1,74 @@
+/*
+ * 配色と部品の作りは、やわらかい青を基調にしたサンプル集の定番表現に寄せている:
+ * 押すと沈む立体ボタン / 左に色帯のあるボックス＋薄い影 / マーカー風の見出し /
+ * 斜めストライプ / 丸いラベル
+ */
 :root {
   color-scheme: light dark;
-  --bg: #f5f4f1;
+  --bg: #f3f8fe;
   --surface: #ffffff;
-  --line: #e2e0da;
-  --text: #1d1c1a;
-  --muted: #7a776f;
-  --accent: #d9432f;
-  --accent-soft: #fdeeeb;
-  --off-surface: #f0efeb;
+  --line: #d6e4f5;
+  --text: #474747;
+  --muted: #8a93a3;
 
-  --normal-bg: #eef1f5;
-  --normal-bar: #8792a2;
-  --swapped-bg: #ece8ff;
-  --swapped-bar: #6b53d1;
-  --extra-bg: #e0f4e7;
-  --extra-bar: #2c9a57;
-  --room-bg: #fff0d1;
-  --room-bar: #cf8300;
-  --off-bg: #e9e8e4;
-  --off-bar: #aaa79f;
+  --main: #5f86d8;
+  --main-deep: #4d6aa8;
+  --main-soft: #e6f1ff;
+  --main-pale: #cde4ff;
+  --accent: #f0706f;
+  --accent-soft: #ffeaea;
+  --warm: #ffa726;
+  --warm-soft: #fff3d6;
+
+  --shadow: 0 3px 4px rgb(60 90 140 / 0.16);
+  --shadow-card: 0 2px 3px rgb(60 90 140 / 0.18);
+  --stripe-a: #f6f7f9;
+  --stripe-b: #eceef2;
+
+  --normal-bg: #ffffff;
+  --normal-bar: #6f9be0;
+  --swapped-bg: #f1ecff;
+  --swapped-bar: #7a62cf;
+  --extra-bg: #e4f7ea;
+  --extra-bar: #2f9e5b;
+  --room-bg: #fff3d6;
+  --room-bar: #d98500;
+  --off-bg: #eef0f3;
+  --off-bar: #b3bac6;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #161615;
-    --surface: #1f1f1d;
-    --line: #33322f;
-    --text: #ecebe7;
-    --muted: #96938a;
-    --accent: #ff6b57;
-    --accent-soft: #3a211d;
-    --off-surface: #1a1a18;
+    --bg: #1a1e26;
+    --surface: #242a35;
+    --line: #353f51;
+    --text: #e6e9ef;
+    --muted: #98a2b5;
 
-    --normal-bg: #2a2e35;
-    --normal-bar: #7d8898;
-    --swapped-bg: #2d2850;
-    --swapped-bar: #9a86ff;
-    --extra-bg: #1c3a28;
-    --extra-bar: #4cc27c;
-    --room-bg: #42320f;
-    --room-bar: #f0a92a;
-    --off-bg: #2a2927;
-    --off-bar: #6f6c65;
+    --main: #86a8ee;
+    --main-deep: #4a639c;
+    --main-soft: #2a3449;
+    --main-pale: #3a4a69;
+    --accent: #ff8f8e;
+    --accent-soft: #46292b;
+    --warm: #ffb74d;
+    --warm-soft: #453611;
+
+    --shadow: 0 3px 6px rgb(0 0 0 / 0.35);
+    --shadow-card: 0 2px 3px rgb(0 0 0 / 0.35);
+    --stripe-a: #20252e;
+    --stripe-b: #272d38;
+
+    --normal-bg: #2d3543;
+    --normal-bar: #86a8ee;
+    --swapped-bg: #342d52;
+    --swapped-bar: #ab97f2;
+    --extra-bg: #1f3b2b;
+    --extra-bar: #5ccb86;
+    --room-bg: #453611;
+    --room-bar: #f3b040;
+    --off-bg: #2a2f39;
+    --off-bar: #677085;
   }
 }
 
@@ -55,14 +82,16 @@ body {
   color: var(--text);
   font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Noto Sans JP", sans-serif;
   font-size: 15px;
-  line-height: 1.4;
+  line-height: 1.45;
 }
 
 .page {
   max-width: 1100px;
   margin: 0 auto;
-  padding: 24px 16px 32px;
+  padding: 28px 16px 36px;
 }
+
+/* ---- ヘッダー ---- */
 
 .bar {
   display: flex;
@@ -71,63 +100,93 @@ body {
   gap: 12px;
 }
 
+/* マーカーを引いたような見出し */
 .bar h1 {
   margin: 0;
-  font-size: 1.35rem;
-  font-weight: 650;
+  padding: 0 0.25em;
+  background: linear-gradient(transparent 62%, var(--main-pale) 62%);
+  font-size: 1.4rem;
+  font-weight: bold;
   font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
 }
 
 .nav {
   display: flex;
-  gap: 6px;
+  gap: 8px;
+  padding-bottom: 4px;
 }
 
-.nav button {
-  min-width: 36px;
+/* 押すと沈む立体ボタン。下の「厚み」は影で作るのでレイアウトは動かない */
+.nav button,
+.dialog-actions button {
+  min-width: 38px;
   height: 34px;
-  padding: 0 12px;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  background: var(--surface);
-  color: var(--text);
+  padding: 0 14px;
+  border: 0;
+  border-radius: 6px;
+  background: var(--main);
+  box-shadow: 0 4px 0 var(--main-deep);
+  color: #fff;
   font: inherit;
+  font-weight: bold;
   white-space: nowrap;
   cursor: pointer;
+  transition: transform 0.08s, box-shadow 0.08s, filter 0.15s;
 }
 
-.nav button:hover {
-  border-color: var(--muted);
+.nav button:hover,
+.dialog-actions button:hover {
+  filter: brightness(1.07);
+}
+
+.nav button:active,
+.dialog-actions button:active {
+  box-shadow: 0 1px 0 var(--main-deep);
+  transform: translateY(3px);
 }
 
 .nav button:focus-visible,
+.dialog-actions button:focus-visible,
 .foot a:focus-visible {
-  outline: 2px solid var(--accent);
+  outline: 2px solid var(--warm);
   outline-offset: 2px;
 }
 
 .nav #prev,
 .nav #next {
-  padding: 0;
-  font-size: 1.25rem;
+  padding: 0 0 2px;
+  font-size: 1.3rem;
   line-height: 1;
 }
 
+/* ---- 変更サマリー: 左に色帯のあるボックス ---- */
+
 .summary {
-  min-height: 1.4em;
-  margin: 10px 0 16px;
+  min-height: 2.6em;
+  margin: 14px 0 18px;
+  padding: 0.55em 1em;
+  border-left: 6px solid var(--main);
+  border-radius: 0 8px 8px 0;
+  background: var(--main-soft);
   color: var(--muted);
 }
 
 .summary.changed {
+  border-color: var(--warm);
+  background: var(--warm-soft);
   color: var(--text);
-  font-weight: 600;
+  font-weight: bold;
 }
 
 .summary.error {
+  border-color: var(--accent);
+  background: var(--accent-soft);
   color: var(--accent);
-  font-weight: 600;
+  font-weight: bold;
 }
+
+/* ---- 時間割グリッド ---- */
 
 /* 列数は app.js が --days で渡す */
 .grid {
@@ -135,9 +194,11 @@ body {
   grid-template-columns: 4.25rem repeat(var(--days, 5), minmax(0, 1fr));
   gap: 1px;
   overflow: hidden;
-  border: 1px solid var(--line);
-  border-radius: 12px;
+  border-top: 5px solid var(--main);
+  border-radius: 10px;
   background: var(--line);
+  box-shadow: var(--shadow);
+  transition: opacity 0.15s;
 }
 
 .grid.loading {
@@ -153,57 +214,85 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 2px;
+  gap: 3px;
+  width: 100%;
   padding: 10px 4px 8px;
+  border: 0;
+  background: var(--main-soft);
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.grid > .cell:first-child {
+  background: var(--main-soft);
+}
+
+.day-head:hover .date {
+  background: var(--surface);
+  box-shadow: 0 2px 0 var(--main-pale);
+}
+
+.day-head:focus-visible,
+.session:focus-visible,
+.add-extra:focus-visible {
+  outline: 2px solid var(--warm);
+  outline-offset: -2px;
 }
 
 .day-head .weekday {
-  color: var(--muted);
+  color: var(--main);
   font-size: 0.8rem;
+  font-weight: bold;
 }
 
 .day-head .date {
   display: grid;
   place-items: center;
-  min-width: 2rem;
-  height: 2rem;
+  min-width: 2.1rem;
+  height: 2.1rem;
   padding: 0 6px;
   border-radius: 999px;
-  font-size: 1.05rem;
-  font-weight: 600;
+  font-size: 1.1rem;
+  font-weight: bold;
   font-variant-numeric: tabular-nums;
+  transition: background 0.15s, box-shadow 0.15s;
 }
 
 .day-head.today .weekday {
   color: var(--accent);
-  font-weight: 600;
 }
 
-.day-head.today .date {
+.day-head.today .date,
+.day-head.today:hover .date {
   background: var(--accent);
+  box-shadow: 0 2px 0 color-mix(in srgb, var(--accent) 70%, #000);
   color: #fff;
 }
 
+/* 日の状態を示す丸いラベル */
 .day-note {
-  min-height: 1.3rem;
-  padding: 1px 8px;
+  min-height: 1.35rem;
+  padding: 1px 9px;
   border-radius: 999px;
-  font-size: 0.75rem;
-  font-weight: 600;
+  font-size: 0.72rem;
+  font-weight: bold;
   text-align: center;
 }
 
 .day-note.swapped {
-  background: var(--swapped-bg);
-  color: var(--swapped-bar);
+  background: var(--swapped-bar);
+  color: #fff;
 }
 
 .day-note.off {
-  background: var(--off-bg);
-  color: var(--muted);
+  background: var(--off-bar);
+  color: #fff;
 }
 
 .day-note.holiday {
+  border: 1px solid var(--accent);
+  background: var(--surface);
   color: var(--accent);
 }
 
@@ -212,61 +301,141 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 2px;
+  gap: 3px;
   padding: 6px 2px;
   color: var(--muted);
-  font-size: 0.7rem;
+  font-size: 0.68rem;
   font-variant-numeric: tabular-nums;
 }
 
 .period-head .number {
-  color: var(--text);
-  font-size: 1.05rem;
-  font-weight: 600;
+  display: grid;
+  place-items: center;
+  width: 1.9rem;
+  height: 1.9rem;
+  border: 2px solid var(--main-pale);
+  border-radius: 50%;
+  color: var(--main);
+  font-size: 1rem;
+  font-weight: bold;
 }
 
 .period-head.now {
-  box-shadow: inset 3px 0 0 var(--accent);
+  box-shadow: inset 4px 0 0 var(--accent);
 }
 
 .period-head.now .number {
-  color: var(--accent);
+  border-color: var(--accent);
+  background: var(--accent);
+  color: #fff;
 }
 
 .slot {
+  position: relative;
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  min-height: 5.25rem;
-  padding: 4px;
-}
-
-.slot.off-day {
-  background: var(--off-surface);
+  gap: 5px;
+  min-height: 5.4rem;
+  padding: 5px;
 }
 
 .slot.today {
-  background: color-mix(in srgb, var(--accent-soft) 45%, var(--surface));
+  background: color-mix(in srgb, var(--accent-soft) 40%, var(--surface));
+}
+
+/* 休みの日は斜めストライプ */
+.slot.off-day {
+  background: repeating-linear-gradient(
+    -45deg,
+    var(--stripe-a),
+    var(--stripe-a) 5px,
+    var(--stripe-b) 5px,
+    var(--stripe-b) 10px
+  );
 }
 
 .slot.now {
   box-shadow: inset 0 0 0 2px var(--accent);
 }
 
+/* 補講を追加するボタン。空きコマでは全面、授業があるコマでは右下に出る */
+.add-extra {
+  flex: 1;
+  min-height: 1.4rem;
+  border: 2px dashed transparent;
+  border-radius: 8px;
+  background: none;
+  color: transparent;
+  font: inherit;
+  font-size: 1.15rem;
+  font-weight: bold;
+  line-height: 1;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s, background 0.15s;
+}
+
+.slot .session ~ .add-extra {
+  position: absolute;
+  right: 7px;
+  bottom: 7px;
+  flex: none;
+  width: 1.5rem;
+  height: 1.5rem;
+  min-height: 0;
+  padding: 0;
+  border-radius: 50%;
+}
+
+.slot:hover .add-extra,
+.add-extra:focus-visible {
+  border-color: var(--main-pale);
+  color: var(--main);
+}
+
+.slot:hover .session ~ .add-extra,
+.session ~ .add-extra:focus-visible {
+  border-style: solid;
+  background: var(--surface);
+}
+
+.add-extra:hover {
+  border-color: var(--main);
+  background: var(--main-soft);
+}
+
+/* ---- 授業カード: 左に色帯のあるボックス＋薄い影 ---- */
+
 .session {
   flex: 1;
   display: flex;
   flex-direction: column;
   gap: 2px;
-  padding: 6px 8px;
-  border-left: 3px solid var(--normal-bar);
-  border-radius: 6px;
+  padding: 7px 9px;
+  border: 0;
+  border-left: 5px solid var(--normal-bar);
+  border-radius: 3px 8px 8px 3px;
   background: var(--normal-bg);
+  box-shadow: var(--shadow-card);
+  color: inherit;
+  font: inherit;
+  text-align: left;
   overflow-wrap: anywhere;
+  cursor: pointer;
+  transition: transform 0.1s, box-shadow 0.1s;
+}
+
+.session:hover {
+  box-shadow: 0 4px 7px rgb(60 90 140 / 0.24);
+  transform: translateY(-1px);
+}
+
+.session:active {
+  box-shadow: 0 0 1px rgb(60 90 140 / 0.3);
+  transform: translateY(1px);
 }
 
 .session .name {
-  font-weight: 600;
+  font-weight: bold;
 }
 
 .session .meta {
@@ -281,8 +450,13 @@ body {
 .session .badge {
   align-self: flex-start;
   margin-top: auto;
-  font-size: 0.7rem;
-  font-weight: 700;
+  padding: 0 8px;
+  border-radius: 999px;
+  background: var(--normal-bar);
+  color: #fff;
+  font-size: 0.68rem;
+  font-weight: bold;
+  line-height: 1.6;
 }
 
 .session.swapped {
@@ -291,7 +465,7 @@ body {
 }
 
 .session.swapped .badge {
-  color: var(--swapped-bar);
+  background: var(--swapped-bar);
 }
 
 .session.extra {
@@ -300,7 +474,7 @@ body {
 }
 
 .session.extra .badge {
-  color: var(--extra-bar);
+  background: var(--extra-bar);
 }
 
 .session.room_changed {
@@ -308,22 +482,196 @@ body {
   background: var(--room-bg);
 }
 
-.session.room_changed .badge,
+.session.room_changed .badge {
+  background: var(--room-bar);
+}
+
 .session.room_changed .room {
   color: var(--room-bar);
-  font-weight: 700;
+  font-weight: bold;
 }
 
 .session.off {
   border-color: var(--off-bar);
   background: var(--off-bg);
+  box-shadow: none;
   color: var(--muted);
 }
 
 .session.off .name {
-  font-weight: 500;
+  font-weight: normal;
   text-decoration: line-through;
 }
+
+.session.off .badge {
+  background: var(--off-bar);
+}
+
+@media (prefers-color-scheme: dark) {
+  .session .badge,
+  .day-note.swapped,
+  .day-note.off {
+    color: #1a1e26;
+  }
+}
+
+/* ---- 登録ダイアログ ---- */
+
+.dialog {
+  width: min(26rem, calc(100vw - 32px));
+  padding: 20px 22px 22px;
+  border: 0;
+  border-top: 6px solid var(--main);
+  border-radius: 10px;
+  background: var(--surface);
+  color: var(--text);
+  box-shadow: 0 10px 30px rgb(30 50 90 / 0.3);
+}
+
+.dialog::backdrop {
+  background: rgb(40 55 85 / 0.4);
+}
+
+/* 二色の下線を引いた見出し */
+.dialog h2 {
+  position: relative;
+  margin: 0;
+  padding-bottom: 0.4em;
+  border-bottom: 3px solid var(--main-pale);
+  font-size: 1.1rem;
+}
+
+.dialog h2::after {
+  position: absolute;
+  bottom: -3px;
+  left: 0;
+  width: 28%;
+  border-bottom: 3px solid var(--main);
+  content: "";
+}
+
+.dialog-sub {
+  margin: 8px 0 16px;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.dialog-body {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.dialog-body label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dialog-body label.field {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 4px;
+  color: var(--main);
+  font-size: 0.8rem;
+  font-weight: bold;
+}
+
+.dialog-body .indent {
+  margin-left: 1.6rem;
+}
+
+.dialog-body hr {
+  width: 100%;
+  margin: 4px 0;
+  border: 0;
+  border-top: 2px dashed var(--main-pale);
+}
+
+.dialog-body .note {
+  margin: 0;
+  padding: 0.5em 1em;
+  border-left: 5px solid var(--main-pale);
+  background: var(--main-soft);
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.dialog input[type="text"],
+.dialog select {
+  min-width: 0;
+  height: 36px;
+  padding: 0 10px;
+  border: 2px solid var(--main-pale);
+  border-radius: 6px;
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  font-weight: normal;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.dialog input[type="text"]:focus,
+.dialog select:focus {
+  border-color: var(--main);
+  box-shadow: 0 0 0 3px var(--main-soft);
+  outline: 0;
+}
+
+.dialog input[type="text"] {
+  flex: 1;
+}
+
+.dialog input[type="radio"],
+.dialog input[type="checkbox"] {
+  width: 1.05rem;
+  height: 1.05rem;
+  accent-color: var(--main);
+}
+
+.dialog-error {
+  min-height: 1.2em;
+  margin: 12px 0 0;
+  color: var(--accent);
+  font-size: 0.85rem;
+  font-weight: bold;
+}
+
+.dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 8px;
+  padding-bottom: 4px;
+}
+
+/* キャンセルは白い立体ボタン、保存は青い立体ボタン */
+.dialog-actions button {
+  background: var(--surface);
+  box-shadow: 0 4px 0 var(--main-pale), 0 0 0 2px var(--main-pale) inset;
+  color: var(--main);
+}
+
+.dialog-actions button:active {
+  box-shadow: 0 1px 0 var(--main-pale), 0 0 0 2px var(--main-pale) inset;
+}
+
+.dialog-actions button.primary {
+  background: var(--main);
+  box-shadow: 0 4px 0 var(--main-deep);
+  color: #fff;
+}
+
+.dialog-actions button.primary:active {
+  box-shadow: 0 1px 0 var(--main-deep);
+}
+
+.dialog-actions button:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+/* ---- フッター ---- */
 
 .foot {
   display: flex;
@@ -331,13 +679,21 @@ body {
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  margin-top: 14px;
+  margin-top: 18px;
   color: var(--muted);
   font-size: 0.8rem;
 }
 
 .foot a {
-  color: inherit;
+  padding-bottom: 1px;
+  border-bottom: 2px dotted var(--main-pale);
+  color: var(--main);
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.foot a:hover {
+  border-bottom-color: var(--main);
 }
 
 .legend {
@@ -356,10 +712,11 @@ body {
 }
 
 .chip {
-  width: 12px;
-  height: 12px;
-  border-left: 3px solid;
-  border-radius: 3px;
+  width: 14px;
+  height: 14px;
+  border-left: 4px solid;
+  border-radius: 2px 4px 4px 2px;
+  box-shadow: var(--shadow-card);
 }
 
 .chip.swapped {
@@ -380,6 +737,7 @@ body {
 .chip.off {
   border-color: var(--off-bar);
   background: var(--off-bg);
+  box-shadow: none;
 }
 
 @media (max-width: 640px) {
@@ -391,8 +749,17 @@ body {
     padding: 16px 8px 24px;
   }
 
+  .bar {
+    flex-wrap: wrap;
+  }
+
   .bar h1 {
-    font-size: 1.15rem;
+    font-size: 1.1rem;
+    white-space: nowrap;
+  }
+
+  .nav button {
+    padding: 0 10px;
   }
 
   .grid {
@@ -403,7 +770,40 @@ body {
     display: none;
   }
 
+  .slot {
+    padding: 3px;
+  }
+
   .session {
-    padding: 4px 5px;
+    padding: 5px 5px;
+    border-left-width: 4px;
+  }
+
+  .session .badge {
+    padding: 0 6px;
+  }
+
+  .day-note {
+    padding: 2px 4px;
+    border-radius: 8px;
+    font-size: 0.62rem;
+    line-height: 1.25;
+  }
+}
+
+/* タッチ端末ではホバーがないので、空きコマにだけ薄い「+」を常に出す */
+@media (hover: none) {
+  .add-extra {
+    color: var(--main-pale);
+  }
+
+  .slot .session ~ .add-extra {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
   }
 }
