@@ -92,4 +92,52 @@ import Testing
             try Schedule(timetable)
         }
     }
+
+    @Test func editingCoursesDropsChangesThatLostTheirClass() throws {
+        var timetable = lab()
+        let nextWeek = date("2026-10-15")
+        timetable.setClass(on: day, name: "実験", period: 3, siblingPeriods: [3, 4], to: .off, wholeDay: true)
+        timetable.setClass(on: nextWeek, name: "実験", period: 4, siblingPeriods: [3, 4], to: .room("E9"), wholeDay: false)
+        timetable.setClass(on: day, name: "英語", period: 1, siblingPeriods: [1], to: .room("B2"), wholeDay: true)
+        timetable.setDay(on: date("2026-10-21"), to: .off)
+
+        // 4限の「実験」を消すと、4限だけに付けた変更は消え、全コマ対象の変更は3限に残る
+        timetable.courses.removeAll { $0.name == "実験" && $0.slot == .period(4) }
+        #expect(throws: TimetableError.self) { try Schedule(timetable) }
+        timetable.removeOrphanedClassChanges()
+        #expect(timetable.exceptions == [
+            .classChange(date: day, className: "実験", period: nil, .off),
+            .classChange(date: day, className: "英語", period: nil, .room("B2")),
+            .dayOff(date: date("2026-10-21"), off: true),
+        ])
+        _ = try Schedule(timetable)
+
+        // 「英語」を金曜に移すと、木曜に付けていた変更は消える
+        timetable.courses = timetable.courses.map {
+            $0.name == "英語" ? Course(name: "英語", weekday: 4, slot: $0.slot) : $0
+        }
+        timetable.removeOrphanedClassChanges()
+        #expect(timetable.exceptions.count == 2)
+        _ = try Schedule(timetable)
+    }
+
+    @Test func orphanCheckFollowsSwapsAndTerms() throws {
+        let terms = ["3": DateRange(start: date("2026-10-05"), end: date("2026-12-01"))]
+        var timetable = makeTimetable(
+            exceptions: [
+                .swap(date: date("2026-10-16"), asWeekday: 0),
+                .classChange(date: date("2026-10-16"), className: "A", period: 1, .off),  // 金曜を月曜授業に
+                .classChange(date: date("2026-11-30"), className: "A", period: nil, .room("X")),
+            ],
+            courses: [Course(name: "A", weekday: 0, slot: .period(1), term: "3")],
+            terms: terms)
+        timetable.removeOrphanedClassChanges()
+        #expect(timetable.exceptions.count == 3)
+
+        // タームを短くすると、開講期間から外れた日の変更は消える
+        timetable.terms["3"] = DateRange(start: date("2026-10-05"), end: date("2026-11-01"))
+        timetable.removeOrphanedClassChanges()
+        #expect(timetable.exceptions.count == 2)
+        _ = try Schedule(timetable)
+    }
 }

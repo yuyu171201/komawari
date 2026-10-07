@@ -7,6 +7,9 @@ struct WeekScreen: View {
     @State private var monday = WeekScreen.initialDate().monday
 
     @State private var editing: EditTarget?
+    /// この週の変更（休講・教室変更など）を登録するモード。オンの間だけタップで登録画面が開く。
+    @State private var isEditing = false
+    @State private var showsCourses = false
 
     /// 起動引数 `-date YYYY-MM-DD` があればその週から開く（動作確認用）。
     private static func initialDate() -> CalendarDate {
@@ -28,10 +31,19 @@ struct WeekScreen: View {
         if let schedule = store.schedule {
             let days = schedule.week(containing: monday)
             ScrollView {
-                VStack(alignment: .leading, spacing: 14) {
+                VStack(alignment: .leading, spacing: 12) {
                     header(days: days, today: today)
-                    SummaryBox(text: summaryText(days: days, today: today), changed: !Schedule.summary(of: days).isEmpty)
-                    WeekGrid(days: days, periods: schedule.timetable.periods, today: today, now: now) {
+                    if isEditing {
+                        EditingBar { withAnimation(.snappy) { isEditing = false } }
+                    } else {
+                        SummaryBox(
+                            text: summaryText(days: days, today: today),
+                            changed: !Schedule.summary(of: days).isEmpty)
+                    }
+                    WeekGrid(
+                        days: days, periods: schedule.timetable.periods,
+                        today: today, now: now, isEditing: isEditing
+                    ) {
                         editing = $0
                     }
                     footer
@@ -39,7 +51,12 @@ struct WeekScreen: View {
                 .padding(.horizontal, 10)
                 .padding(.vertical, 12)
             }
+            // 画面に収まっているときは縦に動かさない（収まらない端末・文字サイズでだけスクロールする）
+            .scrollBounceBehavior(.basedOnSize)
             .gesture(weekSwipe)
+            .fullScreenCover(isPresented: $showsCourses) {
+                CoursesScreen(timetable: schedule.timetable)
+            }
             .sheet(item: $editing) { target in
                 EditSheet(target: target, timetable: schedule.timetable)
                     .presentationDetents([.medium, .large])
@@ -53,23 +70,33 @@ struct WeekScreen: View {
     }
 
     private func header(days: [DayPlan], today: CalendarDate) -> some View {
-        HStack(alignment: .center, spacing: 8) {
+        VStack(alignment: .leading, spacing: 10) {
             Text(rangeTitle(days))
-                .font(.title3.bold())
+                .font(.title2.bold())
                 .monospacedDigit()
                 .lineLimit(1)
                 .minimumScaleFactor(0.5)
                 .padding(.horizontal, 4)
                 // マーカーを引いたような見出し
-                .background(alignment: .bottom) { Theme.mainPale.frame(height: 9) }
-            Spacer(minLength: 4)
-            Button { move(weeks: -1) } label: { Image(systemName: "chevron.left") }
-                .accessibilityLabel("前週")
-            Button("今週") { withAnimation(.snappy) { monday = today.monday } }
-            Button { move(weeks: 1) } label: { Image(systemName: "chevron.right") }
-                .accessibilityLabel("翌週")
+                .background(alignment: .bottom) { Theme.mainPale.frame(height: 10) }
+            HStack(spacing: 8) {
+                Menu {
+                    Button("この週の変更を登録", systemImage: "calendar.badge.exclamationmark") {
+                        withAnimation(.snappy) { isEditing = true }
+                    }
+                    Button("標準の時間割を編集", systemImage: "tablecells") { showsCourses = true }
+                } label: {
+                    Label("編集", systemImage: "pencil")
+                }
+                Spacer(minLength: 4)
+                Button { move(weeks: -1) } label: { Image(systemName: "chevron.left") }
+                    .accessibilityLabel("前週")
+                Button("今週") { withAnimation(.snappy) { monday = today.monday } }
+                Button { move(weeks: 1) } label: { Image(systemName: "chevron.right") }
+                    .accessibilityLabel("翌週")
+            }
+            .buttonStyle(RaisedButtonStyle())
         }
-        .buttonStyle(RaisedButtonStyle())
     }
 
     private var footer: some View {
@@ -128,6 +155,9 @@ private struct SummaryBox: View {
         Text(text)
             .font(changed ? .subheadline.bold() : .subheadline)
             .foregroundStyle(changed ? Theme.text : Theme.muted)
+            // 週によって行数が変わると下の時間割が上下にずれるので、常に2行分の高さを取る
+            .lineLimit(2, reservesSpace: true)
+            .minimumScaleFactor(0.75)
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(.vertical, 9)
             .padding(.leading, 18)
@@ -135,6 +165,33 @@ private struct SummaryBox: View {
             .background(changed ? Theme.warmSoft : Theme.mainSoft)
             .overlay(alignment: .leading) { (changed ? Theme.warm : Theme.main).frame(width: 6) }
             .clipShape(UnevenRoundedRectangle(bottomTrailingRadius: 8, topTrailingRadius: 8))
+    }
+}
+
+/// 変更の登録中に、サマリーの代わりに出す案内。高さはサマリーと同じにして時間割を動かさない。
+private struct EditingBar: View {
+    let onDone: () -> Void
+
+    var body: some View {
+        HStack(spacing: 8) {
+            Text("変更を登録中\n授業・空きコマ・日付をタップ")
+                .font(.subheadline.bold())
+                .lineLimit(2, reservesSpace: true)
+                .minimumScaleFactor(0.75)
+                .frame(maxWidth: .infinity, alignment: .leading)
+            Button("完了", action: onDone)
+                .font(.subheadline.bold())
+                .foregroundStyle(.white)
+                .padding(.horizontal, 14)
+                .padding(.vertical, 7)
+                .background(Theme.accent, in: Capsule())
+        }
+        .padding(.vertical, 9)
+        .padding(.leading, 18)
+        .padding(.trailing, 12)
+        .background(Theme.accentSoft)
+        .overlay(alignment: .leading) { Theme.accent.frame(width: 6) }
+        .clipShape(UnevenRoundedRectangle(bottomTrailingRadius: 8, topTrailingRadius: 8))
     }
 }
 
@@ -169,6 +226,7 @@ private struct WeekGrid: View {
     let periods: [Period]
     let today: CalendarDate
     let now: ClockTime
+    let isEditing: Bool
     let onSelect: (EditTarget) -> Void
 
     private struct Row: Identifiable {
@@ -205,14 +263,17 @@ private struct WeekGrid: View {
                             isToday: day.date == today,
                             isNow: isNow && day.date == today,
                             period: period,
+                            isEditing: isEditing,
                             onSelect: onSelect)
                     }
                 }
             }
         }
         .buttonStyle(PressableCellStyle())
+        // ふだんはタップしても何も起きない。登録モードのときだけ登録画面を開く
+        .allowsHitTesting(isEditing)
         .background(Theme.line)
-        .overlay(alignment: .top) { Theme.main.frame(height: 5) }
+        .overlay(alignment: .top) { (isEditing ? Theme.accent : Theme.main).frame(height: 5) }
         .clipShape(RoundedRectangle(cornerRadius: 10))
         .shadow(color: .black.opacity(0.12), radius: 3, y: 3)
     }
@@ -246,15 +307,21 @@ private struct DayHeader: View {
                 .padding(.horizontal, 5)
                 .frame(minWidth: 30, minHeight: 30)
                 .background(isToday ? Theme.accent : .clear, in: Capsule())
-            if let note {
-                Text(note.text)
-                    .font(.system(size: 9, weight: .bold))
-                    .multilineTextAlignment(.center)
-                    .foregroundStyle(note.ink)
-                    .padding(.horizontal, 4)
-                    .padding(.vertical, 2)
-                    .background(note.fill, in: RoundedRectangle(cornerRadius: 7))
+            // 祝日や振替のラベル。無い週でも同じ高さを空けておき、時間割が上下にずれないようにする
+            ZStack {
+                if let note {
+                    Text(note.text)
+                        .font(.system(size: 9, weight: .bold))
+                        .multilineTextAlignment(.center)
+                        .lineLimit(2)
+                        .minimumScaleFactor(0.7)
+                        .foregroundStyle(note.ink)
+                        .padding(.horizontal, 4)
+                        .padding(.vertical, 2)
+                        .background(note.fill, in: RoundedRectangle(cornerRadius: 7))
+                }
             }
+            .frame(height: 24)
         }
         .padding(.top, 12)
         .padding(.bottom, 6)
@@ -288,12 +355,20 @@ private struct SlotCell: View {
     let isToday: Bool
     let isNow: Bool
     let period: Period?
+    let isEditing: Bool
     let onSelect: (EditTarget) -> Void
 
     var body: some View {
         VStack(spacing: 4) {
             ForEach(Array(sessions.enumerated()), id: \.offset) { item in
                 Button { onSelect(.session(day, item.element)) } label: { SessionCard(session: item.element) }
+            }
+            if isEditing, sessions.isEmpty, period != nil {
+                Image(systemName: "plus")
+                    .font(.footnote.bold())
+                    .foregroundStyle(Theme.mainPale)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .accessibilityHidden(true)
             }
         }
         .padding(3)

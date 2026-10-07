@@ -131,3 +131,29 @@ extension Timetable {
         Array(Set(courses.map(\.name))).sorted()
     }
 }
+
+/// 標準の時間割（授業の一覧）の編集。
+extension Timetable {
+    /// 対象の授業がその日に無くなった教室変更・授業単位の休講を取り除く。
+    ///
+    /// 授業を削除したり曜日・コマ・名前を変えたりすると、その授業に付けていた変更が
+    /// 宙に浮いて時間割全体が不整合になるので、授業を編集したあとに呼ぶ。
+    public mutating func removeOrphanedClassChanges() {
+        var swaps: [CalendarDate: Int] = [:]
+        for case .swap(let date, let asWeekday) in exceptions { swaps[date] = asWeekday }
+        let periodNumbers = Set(periods.map(\.number))
+
+        exceptions.removeAll { exception in
+            guard case .classChange(let date, let name, let period, _) = exception else { return false }
+            guard term.contains(date) else { return true }
+            if let period, !periodNumbers.contains(period) { return true }
+            let weekday = swaps[date] ?? date.weekday
+            return !courses.contains { course in
+                guard course.weekday == weekday, course.name == name else { return false }
+                if let term = course.term, terms[term]?.contains(date) != true { return false }
+                guard let period else { return true }
+                return course.slot == .period(period)
+            }
+        }
+    }
+}
