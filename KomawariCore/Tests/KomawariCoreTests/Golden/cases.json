@@ -5,6 +5,8 @@
     "classes": [
      {
       "end": "12:00",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "Java演習",
       "original_room": null,
       "period": 2,
@@ -31,6 +33,8 @@
     "classes": [
      {
       "end": "14:30",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "機械学習",
       "original_room": null,
       "period": 3,
@@ -81,6 +85,8 @@
     "classes": [
      {
       "end": "12:00",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "Java演習",
       "original_room": null,
       "period": 2,
@@ -107,6 +113,8 @@
     "classes": [
      {
       "end": "14:30",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "機械学習",
       "original_room": null,
       "period": 3,
@@ -157,6 +165,8 @@
     "classes": [
      {
       "end": "12:00",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "Java演習",
       "original_room": null,
       "period": 2,
@@ -183,6 +193,8 @@
     "classes": [
      {
       "end": "12:00",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "Java演習",
       "original_room": null,
       "period": 2,
@@ -233,6 +245,8 @@
     "classes": [
      {
       "end": "12:00",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "Java演習",
       "original_room": null,
       "period": 2,
@@ -259,6 +273,8 @@
     "classes": [
      {
       "end": "14:30",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "機械学習",
       "original_room": null,
       "period": 3,
@@ -309,6 +325,8 @@
     "classes": [
      {
       "end": "12:00",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "Java演習",
       "original_room": null,
       "period": 2,
@@ -335,6 +353,8 @@
     "classes": [
      {
       "end": "14:30",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "機械学習",
       "original_room": null,
       "period": 3,
@@ -385,6 +405,8 @@
     "classes": [
      {
       "end": "12:00",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "Java演習",
       "original_room": null,
       "period": 2,
@@ -411,6 +433,8 @@
     "classes": [
      {
       "end": "14:30",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "機械学習",
       "original_room": null,
       "period": 3,
@@ -445,6 +469,8 @@
     "classes": [
      {
       "end": "16:15",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "機械学習",
       "original_room": null,
       "period": 4,
@@ -471,6 +497,8 @@
     "classes": [
      {
       "end": "12:00",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "Java演習",
       "original_room": null,
       "period": 2,
@@ -497,6 +525,8 @@
     "classes": [
      {
       "end": "14:30",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "機械学習",
       "original_room": null,
       "period": 3,
@@ -547,6 +577,8 @@
     "classes": [
      {
       "end": "12:00",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "Java演習",
       "original_room": null,
       "period": 2,
@@ -573,6 +605,8 @@
     "classes": [
      {
       "end": "14:30",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "機械学習",
       "original_room": null,
       "period": 3,
@@ -623,6 +657,8 @@
     "classes": [
      {
       "end": "12:00",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "Java演習",
       "original_room": null,
       "period": 2,
@@ -649,6 +685,8 @@
     "classes": [
      {
       "end": "14:30",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "機械学習",
       "original_room": "A101",
       "period": 3,
@@ -699,6 +737,8 @@
     "classes": [
      {
       "end": "12:00",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "Java演習",
       "original_room": "情報1号館",
       "period": 2,
@@ -725,6 +765,8 @@
     "classes": [
      {
       "end": "14:30",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "機械学習",
       "original_room": null,
       "period": 3,
@@ -775,6 +817,8 @@
     "classes": [
      {
       "end": "12:00",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "Java演習",
       "original_room": null,
       "period": 2,
@@ -801,6 +845,8 @@
     "classes": [
      {
       "end": "14:30",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "機械学習",
       "original_room": null,
       "period": 3,
@@ -851,6 +897,8 @@
     "classes": [
      {
       "end": "12:00",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "Java演習",
       "original_room": null,
       "period": 2,
@@ -877,6 +925,8 @@
     "classes": [
      {
       "end": "14:30",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "機械学習",
       "original_room": null,
       "period": 3,
@@ -927,6 +977,8 @@
     "classes": [
      {
       "end": "12:00",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "Java演習",
       "original_room": null,
       "period": 2,
@@ -953,6 +1005,8 @@
     "classes": [
      {
       "end": "14:30",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "機械学習",
       "original_room": null,
       "period": 3,
@@ -1003,6 +1057,8 @@
     "classes": [
      {
       "end": "12:00",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "Java演習",
       "original_room": null,
       "period": 2,
@@ -1029,6 +1085,8 @@
     "classes": [
      {
       "end": "14:30",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "機械学習",
       "original_room": null,
       "period": 3,
@@ -1079,6 +1137,8 @@
     "classes": [
      {
       "end": "12:00",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "Java演習",
       "original_room": null,
       "period": 2,
@@ -1105,6 +1165,8 @@
     "classes": [
      {
       "end": "14:30",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "機械学習",
       "original_room": null,
       "period": 3,
@@ -1155,6 +1217,8 @@
     "classes": [
      {
       "end": "12:00",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "Java演習",
       "original_room": null,
       "period": 2,
@@ -1181,6 +1245,8 @@
     "classes": [
      {
       "end": "14:30",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "機械学習",
       "original_room": null,
       "period": 3,
@@ -1231,6 +1297,8 @@
     "classes": [
      {
       "end": "12:00",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "Java演習",
       "original_room": null,
       "period": 2,
@@ -1257,6 +1325,8 @@
     "classes": [
      {
       "end": "14:30",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "機械学習",
       "original_room": null,
       "period": 3,
@@ -1631,6 +1701,8 @@
     "classes": [
      {
       "end": "12:00",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "Java演習",
       "original_room": null,
       "period": 2,
@@ -1649,6 +1721,8 @@
     "classes": [
      {
       "end": "16:05",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "プログラミング",
       "original_room": null,
       "period": 4,
@@ -1707,6 +1781,8 @@
     "classes": [
      {
       "end": "12:00",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "Java演習",
       "original_room": null,
       "period": 2,
@@ -1725,6 +1801,8 @@
     "classes": [
      {
       "end": "16:05",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "プログラミング",
       "original_room": null,
       "period": 4,
@@ -1759,6 +1837,8 @@
     "classes": [
      {
       "end": "12:00",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "Java演習",
       "original_room": null,
       "period": 2,
@@ -1793,6 +1873,8 @@
     "classes": [
      {
       "end": "12:00",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "Java演習",
       "original_room": null,
       "period": 2,
@@ -1811,6 +1893,8 @@
     "classes": [
      {
       "end": "16:05",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "プログラミング",
       "original_room": null,
       "period": 4,
@@ -1869,6 +1953,8 @@
     "classes": [
      {
       "end": "12:00",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "Java演習",
       "original_room": null,
       "period": 2,
@@ -1887,6 +1973,8 @@
     "classes": [
      {
       "end": "16:05",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "プログラミング",
       "original_room": null,
       "period": 4,
@@ -1945,6 +2033,8 @@
     "classes": [
      {
       "end": "12:00",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "Java演習",
       "original_room": null,
       "period": 2,
@@ -1963,6 +2053,8 @@
     "classes": [
      {
       "end": "16:05",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "プログラミング",
       "original_room": null,
       "period": 4,
@@ -2021,6 +2113,8 @@
     "classes": [
      {
       "end": "12:00",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "Java演習",
       "original_room": null,
       "period": 2,
@@ -2039,6 +2133,8 @@
     "classes": [
      {
       "end": "16:05",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "プログラミング",
       "original_room": null,
       "period": 4,
@@ -2097,6 +2193,8 @@
     "classes": [
      {
       "end": "12:00",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "Java演習",
       "original_room": null,
       "period": 2,
@@ -2115,6 +2213,8 @@
     "classes": [
      {
       "end": "16:05",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "プログラミング",
       "original_room": null,
       "period": 4,
@@ -2173,6 +2273,8 @@
     "classes": [
      {
       "end": "12:00",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "Java演習",
       "original_room": null,
       "period": 2,
@@ -2191,6 +2293,8 @@
     "classes": [
      {
       "end": "16:05",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "プログラミング",
       "original_room": null,
       "period": 4,
@@ -2249,6 +2353,8 @@
     "classes": [
      {
       "end": "12:00",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "Java演習",
       "original_room": null,
       "period": 2,
@@ -2267,6 +2373,8 @@
     "classes": [
      {
       "end": "16:05",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "プログラミング",
       "original_room": null,
       "period": 4,
@@ -2285,6 +2393,8 @@
     "classes": [
      {
       "end": "14:20",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "機械学習",
       "original_room": null,
       "period": 3,
@@ -2343,6 +2453,8 @@
     "classes": [
      {
       "end": "16:05",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "プログラミング",
       "original_room": null,
       "period": 4,
@@ -2361,6 +2473,8 @@
     "classes": [
      {
       "end": "14:20",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "機械学習",
       "original_room": null,
       "period": 3,
@@ -2419,6 +2533,8 @@
     "classes": [
      {
       "end": "16:05",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "プログラミング",
       "original_room": null,
       "period": 4,
@@ -2437,6 +2553,8 @@
     "classes": [
      {
       "end": "14:20",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "機械学習",
       "original_room": null,
       "period": 3,
@@ -2495,6 +2613,8 @@
     "classes": [
      {
       "end": "16:05",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "プログラミング",
       "original_room": null,
       "period": 4,
@@ -2513,6 +2633,8 @@
     "classes": [
      {
       "end": "14:20",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "機械学習",
       "original_room": null,
       "period": 3,
@@ -2571,6 +2693,8 @@
     "classes": [
      {
       "end": "16:05",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "プログラミング",
       "original_room": null,
       "period": 4,
@@ -2589,6 +2713,8 @@
     "classes": [
      {
       "end": "14:20",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "機械学習",
       "original_room": null,
       "period": 3,
@@ -2647,6 +2773,8 @@
     "classes": [
      {
       "end": "16:05",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "プログラミング",
       "original_room": null,
       "period": 4,
@@ -2665,6 +2793,8 @@
     "classes": [
      {
       "end": "16:05",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "プログラミング",
       "original_room": null,
       "period": 4,
@@ -2723,6 +2853,8 @@
     "classes": [
      {
       "end": "16:05",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "プログラミング",
       "original_room": null,
       "period": 4,
@@ -2741,6 +2873,8 @@
     "classes": [
      {
       "end": "14:20",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "機械学習",
       "original_room": null,
       "period": 3,
@@ -2799,6 +2933,8 @@
     "classes": [
      {
       "end": "16:05",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "プログラミング",
       "original_room": null,
       "period": 4,
@@ -2817,6 +2953,8 @@
     "classes": [
      {
       "end": "14:20",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "機械学習",
       "original_room": null,
       "period": 3,
@@ -2875,6 +3013,8 @@
     "classes": [
      {
       "end": "16:05",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "プログラミング",
       "original_room": null,
       "period": 4,
@@ -2893,6 +3033,8 @@
     "classes": [
      {
       "end": "14:20",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "機械学習",
       "original_room": null,
       "period": 3,
@@ -2951,6 +3093,8 @@
     "classes": [
      {
       "end": "16:05",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "プログラミング",
       "original_room": null,
       "period": 4,
@@ -2969,6 +3113,8 @@
     "classes": [
      {
       "end": "14:20",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "機械学習",
       "original_room": null,
       "period": 3,
@@ -3401,6 +3547,8 @@
     "classes": [
      {
       "end": "14:00",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "ガイダンス",
       "original_room": null,
       "period": null,
@@ -3483,6 +3631,8 @@
     "classes": [
      {
       "end": "14:20",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "実験",
       "original_room": null,
       "period": 3,
@@ -3492,6 +3642,8 @@
      },
      {
       "end": "16:05",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "実験",
       "original_room": null,
       "period": 4,
@@ -3510,6 +3662,8 @@
     "classes": [
      {
       "end": "19:40",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "ゼミ",
       "original_room": null,
       "period": null,
@@ -3528,6 +3682,8 @@
     "classes": [
      {
       "end": "12:00",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "あいうえお",
       "original_room": null,
       "period": 2,
@@ -3537,6 +3693,8 @@
      },
      {
       "end": "12:00",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "アルゴリズム",
       "original_room": null,
       "period": 2,
@@ -3571,6 +3729,8 @@
     "classes": [
      {
       "end": "10:15",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "線形代数",
       "original_room": null,
       "period": 1,
@@ -3580,6 +3740,8 @@
      },
      {
       "end": "12:00",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "線形代数",
       "original_room": "A1",
       "period": 2,
@@ -3598,6 +3760,8 @@
     "classes": [
      {
       "end": "14:20",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "英語",
       "original_room": null,
       "period": 3,
@@ -3616,6 +3780,8 @@
     "classes": [
      {
       "end": "14:20",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "実験",
       "original_room": null,
       "period": 3,
@@ -3625,6 +3791,8 @@
      },
      {
       "end": "16:05",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "実験",
       "original_room": null,
       "period": 4,
@@ -3643,6 +3811,8 @@
     "classes": [
      {
       "end": "19:40",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "ゼミ",
       "original_room": null,
       "period": null,
@@ -3661,6 +3831,8 @@
     "classes": [
      {
       "end": "12:00",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "あいうえお",
       "original_room": null,
       "period": 2,
@@ -3670,6 +3842,8 @@
      },
      {
       "end": "12:00",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "アルゴリズム",
       "original_room": null,
       "period": 2,
@@ -3704,6 +3878,8 @@
     "classes": [
      {
       "end": "10:15",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "線形代数",
       "original_room": null,
       "period": 1,
@@ -3713,6 +3889,8 @@
      },
      {
       "end": "12:00",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "線形代数",
       "original_room": null,
       "period": 2,
@@ -3731,6 +3909,8 @@
     "classes": [
      {
       "end": "14:20",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "英語",
       "original_room": null,
       "period": 3,
@@ -3749,6 +3929,8 @@
     "classes": [
      {
       "end": "14:20",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "実験",
       "original_room": null,
       "period": 3,
@@ -3758,6 +3940,8 @@
      },
      {
       "end": "16:05",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "実験",
       "original_room": null,
       "period": 4,
@@ -3776,6 +3960,8 @@
     "classes": [
      {
       "end": "19:40",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "ゼミ",
       "original_room": null,
       "period": null,
@@ -3794,6 +3980,8 @@
     "classes": [
      {
       "end": "12:00",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "あいうえお",
       "original_room": null,
       "period": 2,
@@ -3803,6 +3991,8 @@
      },
      {
       "end": "12:00",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "アルゴリズム",
       "original_room": null,
       "period": 2,
@@ -3837,6 +4027,8 @@
     "classes": [
      {
       "end": "10:15",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "線形代数",
       "original_room": null,
       "period": 1,
@@ -3846,6 +4038,8 @@
      },
      {
       "end": "12:00",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "線形代数",
       "original_room": null,
       "period": 2,
@@ -3864,6 +4058,8 @@
     "classes": [
      {
       "end": "14:20",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "英語",
       "original_room": null,
       "period": 3,
@@ -3882,6 +4078,8 @@
     "classes": [
      {
       "end": "14:20",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "実験",
       "original_room": null,
       "period": 3,
@@ -3891,6 +4089,8 @@
      },
      {
       "end": "16:05",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "実験",
       "original_room": null,
       "period": 4,
@@ -3909,6 +4109,8 @@
     "classes": [
      {
       "end": "19:40",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "ゼミ",
       "original_room": null,
       "period": null,
@@ -3927,6 +4129,8 @@
     "classes": [
      {
       "end": "14:20",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "実験",
       "original_room": null,
       "period": 3,
@@ -3936,6 +4140,8 @@
      },
      {
       "end": "16:05",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "実験",
       "original_room": null,
       "period": 4,
@@ -3970,6 +4176,8 @@
     "classes": [
      {
       "end": "10:15",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "線形代数",
       "original_room": null,
       "period": 1,
@@ -3979,6 +4187,8 @@
      },
      {
       "end": "12:00",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "線形代数",
       "original_room": null,
       "period": 2,
@@ -3997,6 +4207,8 @@
     "classes": [
      {
       "end": "14:20",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "英語",
       "original_room": null,
       "period": 3,
@@ -4015,6 +4227,8 @@
     "classes": [
      {
       "end": "14:20",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "実験",
       "original_room": null,
       "period": 3,
@@ -4024,6 +4238,8 @@
      },
      {
       "end": "16:05",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "実験",
       "original_room": null,
       "period": 4,
@@ -4042,6 +4258,8 @@
     "classes": [
      {
       "end": "14:20",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "英語",
       "original_room": "C3",
       "period": 3,
@@ -4060,6 +4278,8 @@
     "classes": [
      {
       "end": "12:00",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "あいうえお",
       "original_room": null,
       "period": 2,
@@ -4069,6 +4289,8 @@
      },
      {
       "end": "12:00",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "アルゴリズム",
       "original_room": null,
       "period": 2,
@@ -4103,6 +4325,8 @@
     "classes": [
      {
       "end": "10:15",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "線形代数",
       "original_room": "A1",
       "period": 1,
@@ -4112,6 +4336,8 @@
      },
      {
       "end": "12:00",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "線形代数",
       "original_room": "A1",
       "period": 2,
@@ -4130,12 +4356,14 @@
     "classes": [
      {
       "end": "14:20",
+      "makeup_date": "2026-08-12",
+      "makeup_pending": false,
       "name": "英語",
       "original_room": null,
       "period": 3,
       "room": "C3",
       "start": "12:50",
-      "status": "normal"
+      "status": "off"
      }
     ],
     "date": "2026-05-12",
@@ -4148,21 +4376,25 @@
     "classes": [
      {
       "end": "14:20",
+      "makeup_date": "2026-05-16",
+      "makeup_pending": false,
       "name": "実験",
       "original_room": null,
       "period": 3,
       "room": null,
       "start": "12:50",
-      "status": "normal"
+      "status": "off"
      },
      {
       "end": "16:05",
+      "makeup_date": "2026-05-16",
+      "makeup_pending": false,
       "name": "実験",
       "original_room": null,
       "period": 4,
       "room": null,
       "start": "14:35",
-      "status": "normal"
+      "status": "off"
      }
     ],
     "date": "2026-05-13",
@@ -4175,6 +4407,8 @@
     "classes": [
      {
       "end": "19:40",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "ゼミ",
       "original_room": null,
       "period": null,
@@ -4193,6 +4427,8 @@
     "classes": [
      {
       "end": "12:00",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "あいうえお",
       "original_room": null,
       "period": 2,
@@ -4202,6 +4438,8 @@
      },
      {
       "end": "12:00",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "アルゴリズム",
       "original_room": null,
       "period": 2,
@@ -4217,7 +4455,30 @@
     "status": "normal"
    },
    {
-    "classes": [],
+    "classes": [
+     {
+      "end": "10:15",
+      "makeup_date": null,
+      "makeup_pending": false,
+      "name": "実験",
+      "original_room": null,
+      "period": 1,
+      "room": null,
+      "start": "08:45",
+      "status": "extra"
+     },
+     {
+      "end": "12:00",
+      "makeup_date": null,
+      "makeup_pending": false,
+      "name": "実験",
+      "original_room": null,
+      "period": 2,
+      "room": null,
+      "start": "10:30",
+      "status": "extra"
+     }
+    ],
     "date": "2026-05-16",
     "effective_weekday": 5,
     "holiday": null,
@@ -4236,6 +4497,8 @@
     "classes": [
      {
       "end": "10:15",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "線形代数",
       "original_room": null,
       "period": 1,
@@ -4245,6 +4508,8 @@
      },
      {
       "end": "12:00",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "線形代数",
       "original_room": null,
       "period": 2,
@@ -4263,6 +4528,8 @@
     "classes": [
      {
       "end": "14:20",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "英語",
       "original_room": null,
       "period": 3,
@@ -4281,15 +4548,19 @@
     "classes": [
      {
       "end": "14:20",
+      "makeup_date": null,
+      "makeup_pending": true,
       "name": "実験",
       "original_room": null,
       "period": 3,
       "room": null,
       "start": "12:50",
-      "status": "normal"
+      "status": "off"
      },
      {
       "end": "16:05",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "実験",
       "original_room": null,
       "period": 4,
@@ -4308,6 +4579,8 @@
     "classes": [
      {
       "end": "19:40",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "ゼミ",
       "original_room": null,
       "period": null,
@@ -4326,6 +4599,8 @@
     "classes": [
      {
       "end": "12:00",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "あいうえお",
       "original_room": null,
       "period": 2,
@@ -4335,6 +4610,8 @@
      },
      {
       "end": "12:00",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "アルゴリズム",
       "original_room": null,
       "period": 2,
@@ -4369,6 +4646,8 @@
     "classes": [
      {
       "end": "10:15",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "線形代数",
       "original_room": null,
       "period": 1,
@@ -4378,6 +4657,8 @@
      },
      {
       "end": "12:00",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "線形代数",
       "original_room": null,
       "period": 2,
@@ -4396,6 +4677,8 @@
     "classes": [
      {
       "end": "14:20",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "英語",
       "original_room": null,
       "period": 3,
@@ -4414,6 +4697,8 @@
     "classes": [
      {
       "end": "14:20",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "実験",
       "original_room": null,
       "period": 3,
@@ -4423,6 +4708,8 @@
      },
      {
       "end": "16:05",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "実験",
       "original_room": null,
       "period": 4,
@@ -4441,6 +4728,8 @@
     "classes": [
      {
       "end": "19:40",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "ゼミ",
       "original_room": null,
       "period": null,
@@ -4459,6 +4748,8 @@
     "classes": [
      {
       "end": "12:00",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "あいうえお",
       "original_room": null,
       "period": 2,
@@ -4468,6 +4759,8 @@
      },
      {
       "end": "12:00",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "アルゴリズム",
       "original_room": null,
       "period": 2,
@@ -4502,6 +4795,8 @@
     "classes": [
      {
       "end": "10:15",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "線形代数",
       "original_room": null,
       "period": 1,
@@ -4511,6 +4806,8 @@
      },
      {
       "end": "12:00",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "線形代数",
       "original_room": null,
       "period": 2,
@@ -4529,6 +4826,8 @@
     "classes": [
      {
       "end": "14:20",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "英語",
       "original_room": null,
       "period": 3,
@@ -4547,6 +4846,8 @@
     "classes": [
      {
       "end": "14:20",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "実験",
       "original_room": null,
       "period": 3,
@@ -4556,6 +4857,8 @@
      },
      {
       "end": "16:05",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "実験",
       "original_room": null,
       "period": 4,
@@ -4574,6 +4877,8 @@
     "classes": [
      {
       "end": "19:40",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "ゼミ",
       "original_room": null,
       "period": null,
@@ -4592,6 +4897,8 @@
     "classes": [
      {
       "end": "12:00",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "あいうえお",
       "original_room": null,
       "period": 2,
@@ -4601,6 +4908,8 @@
      },
      {
       "end": "12:00",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "アルゴリズム",
       "original_room": null,
       "period": 2,
@@ -4635,6 +4944,8 @@
     "classes": [
      {
       "end": "10:15",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "線形代数",
       "original_room": null,
       "period": 1,
@@ -4644,6 +4955,8 @@
      },
      {
       "end": "12:00",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "線形代数",
       "original_room": null,
       "period": 2,
@@ -4662,6 +4975,8 @@
     "classes": [
      {
       "end": "14:20",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "英語",
       "original_room": null,
       "period": 3,
@@ -4688,6 +5003,8 @@
     "classes": [
      {
       "end": "19:40",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "ゼミ",
       "original_room": null,
       "period": null,
@@ -4706,6 +5023,8 @@
     "classes": [
      {
       "end": "12:00",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "あいうえお",
       "original_room": null,
       "period": 2,
@@ -4715,6 +5034,8 @@
      },
      {
       "end": "12:00",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "アルゴリズム",
       "original_room": null,
       "period": 2,
@@ -4733,6 +5054,8 @@
     "classes": [
      {
       "end": "10:15",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "体育",
       "original_room": null,
       "period": 1,
@@ -4759,6 +5082,8 @@
     "classes": [
      {
       "end": "10:15",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "統計学",
       "original_room": null,
       "period": 1,
@@ -4768,6 +5093,19 @@
      },
      {
       "end": "12:00",
+      "makeup_date": null,
+      "makeup_pending": false,
+      "name": "英語",
+      "original_room": null,
+      "period": 2,
+      "room": "C3",
+      "start": "10:30",
+      "status": "extra"
+     },
+     {
+      "end": "12:00",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "集中講義",
       "original_room": null,
       "period": 2,
@@ -4786,12 +5124,14 @@
     "classes": [
      {
       "end": "14:20",
+      "makeup_date": "2026-06-15",
+      "makeup_pending": false,
       "name": "英語",
       "original_room": null,
       "period": 3,
       "room": "C3",
       "start": "12:50",
-      "status": "normal"
+      "status": "off"
      }
     ],
     "date": "2026-06-16",
@@ -4812,6 +5152,8 @@
     "classes": [
      {
       "end": "19:40",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "ゼミ",
       "original_room": null,
       "period": null,
@@ -4830,6 +5172,8 @@
     "classes": [
      {
       "end": "12:00",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "あいうえお",
       "original_room": null,
       "period": 2,
@@ -4839,6 +5183,8 @@
      },
      {
       "end": "12:00",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "アルゴリズム",
       "original_room": null,
       "period": 2,
@@ -4857,6 +5203,8 @@
     "classes": [
      {
       "end": "10:15",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "体育",
       "original_room": null,
       "period": 1,
@@ -4866,6 +5214,8 @@
      },
      {
       "end": "10:30",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "英語",
       "original_room": null,
       "period": null,
@@ -4884,6 +5234,8 @@
     "classes": [
      {
       "end": "10:15",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "英語",
       "original_room": null,
       "period": 1,
@@ -4902,6 +5254,8 @@
     "classes": [
      {
       "end": "10:15",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "統計学",
       "original_room": null,
       "period": 1,
@@ -4920,6 +5274,8 @@
     "classes": [
      {
       "end": "14:20",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "英語",
       "original_room": null,
       "period": 3,
@@ -4946,6 +5302,8 @@
     "classes": [
      {
       "end": "19:40",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "ゼミ",
       "original_room": null,
       "period": null,
@@ -4964,6 +5322,8 @@
     "classes": [
      {
       "end": "12:00",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "あいうえお",
       "original_room": null,
       "period": 2,
@@ -4973,6 +5333,8 @@
      },
      {
       "end": "12:00",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "アルゴリズム",
       "original_room": null,
       "period": 2,
@@ -4991,6 +5353,8 @@
     "classes": [
      {
       "end": "10:15",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "体育",
       "original_room": null,
       "period": 1,
@@ -5017,6 +5381,8 @@
     "classes": [
      {
       "end": "10:15",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "統計学",
       "original_room": null,
       "period": 1,
@@ -5035,6 +5401,8 @@
     "classes": [
      {
       "end": "14:20",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "英語",
       "original_room": null,
       "period": 3,
@@ -5061,6 +5429,8 @@
     "classes": [
      {
       "end": "19:40",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "ゼミ",
       "original_room": null,
       "period": null,
@@ -5079,6 +5449,8 @@
     "classes": [
      {
       "end": "12:00",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "あいうえお",
       "original_room": null,
       "period": 2,
@@ -5088,6 +5460,8 @@
      },
      {
       "end": "12:00",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "アルゴリズム",
       "original_room": null,
       "period": 2,
@@ -5106,6 +5480,8 @@
     "classes": [
      {
       "end": "10:15",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "体育",
       "original_room": null,
       "period": 1,
@@ -5132,6 +5508,8 @@
     "classes": [
      {
       "end": "10:15",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "統計学",
       "original_room": null,
       "period": 1,
@@ -5150,6 +5528,8 @@
     "classes": [
      {
       "end": "14:20",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "英語",
       "original_room": null,
       "period": 3,
@@ -5176,6 +5556,8 @@
     "classes": [
      {
       "end": "19:40",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "ゼミ",
       "original_room": null,
       "period": null,
@@ -5194,6 +5576,8 @@
     "classes": [
      {
       "end": "12:00",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "あいうえお",
       "original_room": null,
       "period": 2,
@@ -5203,6 +5587,8 @@
      },
      {
       "end": "12:00",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "アルゴリズム",
       "original_room": null,
       "period": 2,
@@ -5221,6 +5607,8 @@
     "classes": [
      {
       "end": "10:15",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "体育",
       "original_room": null,
       "period": 1,
@@ -5247,6 +5635,8 @@
     "classes": [
      {
       "end": "10:15",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "統計学",
       "original_room": null,
       "period": 1,
@@ -5265,6 +5655,8 @@
     "classes": [
      {
       "end": "14:20",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "英語",
       "original_room": null,
       "period": 3,
@@ -5291,6 +5683,8 @@
     "classes": [
      {
       "end": "19:40",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "ゼミ",
       "original_room": null,
       "period": null,
@@ -5309,6 +5703,8 @@
     "classes": [
      {
       "end": "12:00",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "あいうえお",
       "original_room": null,
       "period": 2,
@@ -5318,6 +5714,8 @@
      },
      {
       "end": "12:00",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "アルゴリズム",
       "original_room": null,
       "period": 2,
@@ -5336,6 +5734,8 @@
     "classes": [
      {
       "end": "10:15",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "体育",
       "original_room": null,
       "period": 1,
@@ -5362,6 +5762,8 @@
     "classes": [
      {
       "end": "10:15",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "統計学",
       "original_room": null,
       "period": 1,
@@ -5380,6 +5782,8 @@
     "classes": [
      {
       "end": "14:20",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "英語",
       "original_room": null,
       "period": 3,
@@ -5406,6 +5810,8 @@
     "classes": [
      {
       "end": "19:40",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "ゼミ",
       "original_room": null,
       "period": null,
@@ -5424,6 +5830,8 @@
     "classes": [
      {
       "end": "12:00",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "あいうえお",
       "original_room": null,
       "period": 2,
@@ -5433,6 +5841,8 @@
      },
      {
       "end": "12:00",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "アルゴリズム",
       "original_room": null,
       "period": 2,
@@ -5451,6 +5861,8 @@
     "classes": [
      {
       "end": "10:15",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "体育",
       "original_room": null,
       "period": 1,
@@ -5477,6 +5889,8 @@
     "classes": [
      {
       "end": "10:15",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "統計学",
       "original_room": null,
       "period": 1,
@@ -5495,6 +5909,8 @@
     "classes": [
      {
       "end": "14:20",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "英語",
       "original_room": null,
       "period": 3,
@@ -5521,6 +5937,8 @@
     "classes": [
      {
       "end": "19:40",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "ゼミ",
       "original_room": null,
       "period": null,
@@ -5539,6 +5957,8 @@
     "classes": [
      {
       "end": "12:00",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "あいうえお",
       "original_room": null,
       "period": 2,
@@ -5548,6 +5968,8 @@
      },
      {
       "end": "12:00",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "アルゴリズム",
       "original_room": null,
       "period": 2,
@@ -5566,6 +5988,8 @@
     "classes": [
      {
       "end": "10:15",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "体育",
       "original_room": null,
       "period": 1,
@@ -5592,6 +6016,8 @@
     "classes": [
      {
       "end": "10:15",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "統計学",
       "original_room": null,
       "period": 1,
@@ -5610,6 +6036,8 @@
     "classes": [
      {
       "end": "14:20",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "英語",
       "original_room": null,
       "period": 3,
@@ -5668,6 +6096,8 @@
     "classes": [
      {
       "end": "14:20",
+      "makeup_date": null,
+      "makeup_pending": false,
       "name": "再試験",
       "original_room": null,
       "period": 3,
@@ -5678,6 +6108,34 @@
     ],
     "date": "2026-08-10",
     "effective_weekday": 0,
+    "holiday": null,
+    "off_reason": "out_of_term",
+    "status": "off"
+   },
+   {
+    "classes": [],
+    "date": "2026-08-11",
+    "effective_weekday": 1,
+    "holiday": "山の日",
+    "off_reason": "out_of_term",
+    "status": "off"
+   },
+   {
+    "classes": [
+     {
+      "end": "16:05",
+      "makeup_date": null,
+      "makeup_pending": false,
+      "name": "英語",
+      "original_room": null,
+      "period": 4,
+      "room": "Z1",
+      "start": "14:35",
+      "status": "extra"
+     }
+    ],
+    "date": "2026-08-12",
+    "effective_weekday": 2,
     "holiday": null,
     "off_reason": "out_of_term",
     "status": "off"
@@ -5846,6 +6304,48 @@
     {
      "date": "2026-07-18",
      "off": true
+    },
+    {
+     "class": "実験",
+     "date": "2026-05-13",
+     "makeup": {
+      "date": "2026-05-16",
+      "periods": [
+       1,
+       2
+      ]
+     },
+     "off": true
+    },
+    {
+     "class": "実験",
+     "date": "2026-05-20",
+     "makeup": "pending",
+     "off": true,
+     "period": 3
+    },
+    {
+     "class": "英語",
+     "date": "2026-05-12",
+     "makeup": {
+      "date": "2026-08-12",
+      "periods": [
+       4
+      ],
+      "room": "Z1"
+     },
+     "off": true
+    },
+    {
+     "class": "英語",
+     "date": "2026-06-16",
+     "makeup": {
+      "date": "2026-06-15",
+      "periods": [
+       2
+      ]
+     },
+     "off": true
     }
    ],
    "periods": {
@@ -5985,12 +6485,16 @@
      "2026-05-12",
      "2026-05-13",
      "2026-05-14",
-     "2026-05-15"
+     "2026-05-15",
+     "2026-05-16"
     ],
     "monday": "2026-05-11",
     "summary": [
      "月曜の線形代数が休講",
-     "月曜の線形代数がA7に教室変更"
+     "月曜の線形代数がA7に教室変更",
+     "火曜の英語が休講（補講 8/12(水)）",
+     "水曜の実験が休講（補講 5/16(土)）",
+     "土曜に補講「実験」"
     ]
    },
    {
@@ -6002,7 +6506,9 @@
      "2026-05-22"
     ],
     "monday": "2026-05-18",
-    "summary": []
+    "summary": [
+     "水曜の実験が休講（補講未定）"
+    ]
    },
    {
     "dates": [
@@ -6051,7 +6557,9 @@
     "monday": "2026-06-15",
     "summary": [
      "月曜が休講",
+     "月曜に補講「英語」",
      "月曜に補講「集中講義」",
+     "火曜の英語が休講（補講 6/15(月)）",
      "土曜に補講「英語」",
      "日曜に補講「英語」"
     ]
@@ -6156,7 +6664,8 @@
     "monday": "2026-08-10",
     "summary": [
      "学期外",
-     "月曜に補講「再試験」"
+     "月曜に補講「再試験」",
+     "水曜に補講「英語」"
     ]
    },
    {

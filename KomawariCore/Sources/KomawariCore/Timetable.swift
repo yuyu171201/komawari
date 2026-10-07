@@ -49,9 +49,19 @@ public struct ExtraClass: Hashable, Sendable {
     }
 }
 
+/// 休講にした授業の代わりの日（補講）。
+public enum Makeup: Hashable, Sendable {
+    /// 代わりの日なし。
+    case none
+    /// 代わりの日は未定。
+    case pending
+    /// 代わりの日とコマが決まっている。`room` が nil なら元の授業の教室。
+    case scheduled(date: CalendarDate, periods: [Int], room: String? = nil)
+}
+
 /// 特定の日の特定の授業に対する変更。
 public enum ClassChange: Hashable, Sendable {
-    case off
+    case off(makeup: Makeup = .none)
     case room(String)
 }
 
@@ -206,7 +216,7 @@ extension ScheduleException: Codable {
             try fields.rejectUnknown(["date", "extra"])
             self = .extra(date: date, try fields.decode(ExtraClass.self, forKey: AnyKey("extra")))
         } else if fields.has("class") {
-            try fields.rejectUnknown(["date", "class", "period", "room", "off"])
+            try fields.rejectUnknown(["date", "class", "period", "room", "off", "makeup"])
             let name = try fields.decode(String.self, forKey: AnyKey("class"))
             let period = try fields.decodeIfPresent(Int.self, forKey: AnyKey("period"))
             let off = try fields.decodeIfPresent(Bool.self, forKey: AnyKey("off")) ?? false
@@ -216,7 +226,14 @@ extension ScheduleException: Codable {
                     codingPath: fields.codingPath,
                     debugDescription: "`class` には `room` か `off: true` のどちらか一方を指定してください"))
             }
-            self = .classChange(date: date, className: name, period: period, room.map(ClassChange.room) ?? .off)
+            guard off || !fields.has("makeup") else {
+                throw DecodingError.dataCorrupted(.init(
+                    codingPath: fields.codingPath,
+                    debugDescription: "`makeup` は `off: true` の授業にだけ指定できます"))
+            }
+            let makeup = try fields.decodeIfPresent(Makeup.self, forKey: AnyKey("makeup")) ?? .none
+            self = .classChange(
+                date: date, className: name, period: period, room.map(ClassChange.room) ?? .off(makeup: makeup))
         } else if fields.has("as_weekday") {
             try fields.rejectUnknown(["date", "as_weekday"])
             self = .swap(date: date, asWeekday: try fields.decode(Int.self, forKey: AnyKey("as_weekday")))
@@ -244,9 +261,49 @@ extension ScheduleException: Codable {
             try fields.encode(name, forKey: AnyKey("class"))
             try fields.encodeIfPresent(period, forKey: AnyKey("period"))
             switch change {
-            case .off: try fields.encode(true, forKey: AnyKey("off"))
-            case .room(let room): try fields.encode(room, forKey: AnyKey("room"))
+            case .off(let makeup):
+                try fields.encode(true, forKey: AnyKey("off"))
+                if makeup != .none { try fields.encode(makeup, forKey: AnyKey("makeup")) }
+            case .room(let room):
+                try fields.encode(room, forKey: AnyKey("room"))
             }
+        }
+    }
+}
+
+/// JSON では `"pending"`（未定）か `{"date": ..., "periods": [...], "room": ...}`。
+extension Makeup: Codable {
+    public init(from decoder: Decoder) throws {
+        if let text = try? decoder.singleValueContainer().decode(String.self) {
+            guard text == "pending" else {
+                throw DecodingError.dataCorrupted(.init(
+                    codingPath: decoder.codingPath,
+                    debugDescription: "`makeup` は `pending` か日付とコマの指定にしてください: \(text)"))
+            }
+            self = .pending
+            return
+        }
+        let fields = try decoder.container(keyedBy: AnyKey.self)
+        try fields.rejectUnknown(["date", "periods", "room"])
+        self = .scheduled(
+            date: try fields.decode(CalendarDate.self, forKey: AnyKey("date")),
+            periods: try fields.decode([Int].self, forKey: AnyKey("periods")),
+            room: try fields.decodeIfPresent(String.self, forKey: AnyKey("room")))
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        switch self {
+        case .none:
+            var container = encoder.singleValueContainer()
+            try container.encodeNil()
+        case .pending:
+            var container = encoder.singleValueContainer()
+            try container.encode("pending")
+        case .scheduled(let date, let periods, let room):
+            var fields = encoder.container(keyedBy: AnyKey.self)
+            try fields.encode(date, forKey: AnyKey("date"))
+            try fields.encode(periods, forKey: AnyKey("periods"))
+            try fields.encodeIfPresent(room, forKey: AnyKey("room"))
         }
     }
 }

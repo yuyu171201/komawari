@@ -134,7 +134,7 @@ def _day_heading(day: Day) -> str:
 
 
 def _session_line(s: Session) -> str:
-    slot = f"{s.period}限" if s.period is not None else "    "
+    slot = f"{s.period}コマ" if s.period is not None else "     "
     line = f"{slot} {s.start:%H:%M}-{s.end:%H:%M}  {s.name}"
     if s.room:
         line += f"  @{s.room}"
@@ -146,6 +146,10 @@ def _session_line(s: Session) -> str:
         line += "  [補講]"
     elif s.status == OFF:
         line += "  [休講]"
+        if s.makeup_date:
+            line += f"  補講 {s.makeup_date.month}/{s.makeup_date.day}"
+        elif s.makeup_pending:
+            line += "  補講未定"
     return line
 
 

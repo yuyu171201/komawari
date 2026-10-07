@@ -66,6 +66,10 @@ def _exception(raw: dict) -> dict:
     for key, value in raw.items():
         if key == "extra":
             out["extra"] = _course(value)
+        elif key == "makeup" and isinstance(value, dict):
+            out["makeup"] = {"date": _iso(value["date"]), "periods": list(value["periods"])}
+            if value.get("room") is not None:
+                out["makeup"]["room"] = str(value["room"])
         elif key != "date":
             out[key] = str(value) if key in ("class", "room") else value
     return out

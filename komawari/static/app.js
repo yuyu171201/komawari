@@ -171,6 +171,12 @@ function sessionCard(day, c) {
     card.append(meta);
   }
 
+  if (c.makeup_date) {
+    const d = fromISO(c.makeup_date);
+    card.append(el("span", "meta", `補講 ${d.getMonth() + 1}/${d.getDate()}`));
+  } else if (c.makeup_pending) {
+    card.append(el("span", "meta", "補講未定"));
+  }
   if (BADGES[c.status]) card.append(el("span", "badge", BADGES[c.status]));
   card.title = `${c.name} ${c.start}–${c.end}` + (c.room ? ` @${c.room}` : "");
   card.addEventListener("click", () => (c.status === "extra" ? openExtraDialog(day, c) : openClassDialog(day, c)));
@@ -181,7 +187,7 @@ function addExtraButton(day, row) {
   const button = el("button", "add-extra", "+");
   button.type = "button";
   button.title = "補講を追加";
-  button.setAttribute("aria-label", `${dayLabel(day)} ${row.number}限に補講を追加`);
+  button.setAttribute("aria-label", `${dayLabel(day)} ${row.number}コマに補講を追加`);
   button.addEventListener("click", () => openAddExtraDialog(day, row));
   return button;
 }
@@ -291,7 +297,7 @@ function openClassDialog(day, c) {
 
   openDialog({
     title: c.name,
-    sub: `${dayLabel(day)} ` + (c.period != null ? `${c.period}限 ` : "") + `${c.start}–${c.end}`,
+    sub: `${dayLabel(day)} ` + (c.period != null ? `${c.period}コマ ` : "") + `${c.start}–${c.end}`,
     body,
     collect() {
       const state = chosen("state");
@@ -324,7 +330,7 @@ function openExtraDialog(day, c) {
   );
   openDialog({
     title: `${c.name}（補講）`,
-    sub: `${dayLabel(day)} ` + (c.period != null ? `${c.period}限 ` : "") + `${c.start}–${c.end}` + (c.room ? ` @${c.room}` : ""),
+    sub: `${dayLabel(day)} ` + (c.period != null ? `${c.period}コマ ` : "") + `${c.start}–${c.end}` + (c.room ? ` @${c.room}` : ""),
     body: [el("p", "note", "この補講の登録を取り消します。")],
     submitLabel: "補講を削除",
     collect: entry ? () => ({ remove: [entry.id] }) : null,
@@ -342,7 +348,7 @@ function openAddExtraDialog(day, row) {
 
   openDialog({
     title: "補講を追加",
-    sub: `${dayLabel(day)} ${row.number}限 ${row.start}–${row.end}`,
+    sub: `${dayLabel(day)} ${row.number}コマ ${row.start}–${row.end}`,
     body: [name.label, list, room.label],
     submitLabel: "追加",
     collect() {

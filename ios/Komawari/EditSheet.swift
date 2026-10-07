@@ -116,31 +116,63 @@ private struct ClassForm: View {
     let session: Session
     private let siblingPeriods: [Int]
 
+    private let periods: [Period]
+
     private enum Choice: Hashable { case normal, off, room }
+    private enum MakeupChoice: Hashable { case none, pending, date }
     @State private var choice: Choice
     @State private var room: String
     @State private var wholeDay: Bool
+    // 休講の代わりの日（補講）
+    @State private var makeupChoice = MakeupChoice.none
+    @State private var makeupDate: Date
+    @State private var makeupPeriods: Set<Int>
+    @State private var makeupRoom = ""
 
     init(day: DayPlan, session: Session, timetable: Timetable) {
         self.day = day
         self.session = session
+        periods = timetable.periods.sorted { $0.start < $1.start }
         siblingPeriods = day.classes
             .filter { $0.name == session.name && $0.status != .extra }
             .compactMap(\.period)
+        // 代わりの日の初期値は、翌日の同じコマ
+        _makeupDate = State(initialValue: day.date.adding(days: 1).pickerDate)
+        _makeupPeriods = State(initialValue: Set(siblingPeriods))
 
         switch timetable.classState(on: day.date, name: session.name, period: session.period) {
         case .normal:
             _choice = State(initialValue: .normal)
             _room = State(initialValue: "")
             _wholeDay = State(initialValue: true)
-        case .off:
+        case .off(let makeup):
             _choice = State(initialValue: .off)
             _room = State(initialValue: "")
             _wholeDay = State(initialValue: timetable.hasWholeDayChange(on: day.date, name: session.name))
+            switch makeup {
+            case .none: break
+            case .pending: _makeupChoice = State(initialValue: .pending)
+            case .scheduled(let date, let numbers, let makeupRoom):
+                _makeupChoice = State(initialValue: .date)
+                _makeupDate = State(initialValue: date.pickerDate)
+                _makeupPeriods = State(initialValue: Set(numbers))
+                _makeupRoom = State(initialValue: makeupRoom ?? "")
+            }
         case .room(let current):
             _choice = State(initialValue: .room)
             _room = State(initialValue: current)
             _wholeDay = State(initialValue: timetable.hasWholeDayChange(on: day.date, name: session.name))
+        }
+    }
+
+    private var makeup: Makeup {
+        switch makeupChoice {
+        case .none: return .none
+        case .pending: return .pending
+        case .date:
+            let room = makeupRoom.trimmingCharacters(in: .whitespaces)
+            return .scheduled(
+                date: .today(at: makeupDate), periods: makeupPeriods.sorted(), room: room.isEmpty ? nil : room)
         }
     }
 
@@ -149,12 +181,16 @@ private struct ClassForm: View {
     var body: some View {
         FormScaffold(
             title: session.name,
-            subtitle: "\(label(day.date)) " + (session.period.map { "\($0)限 " } ?? "") + "\(session.start)–\(session.end)",
+            subtitle: "\(label(day.date)) " + (session.period.map { "\($0)コマ " } ?? "") + "\(session.start)–\(session.end)",
             save: { timetable in
                 let state: ClassState
                 switch choice {
                 case .normal: state = .normal
-                case .off: state = .off
+                case .off:
+                    if makeupChoice == .date, makeupPeriods.isEmpty {
+                        throw InputError(message: "補講のコマを選んでください")
+                    }
+                    state = .off(makeup: makeup)
                 case .room:
                     let name = room.trimmingCharacters(in: .whitespaces)
                     guard !name.isEmpty else { throw InputError(message: "新しい教室を入力してください") }
@@ -180,11 +216,49 @@ private struct ClassForm: View {
                     }
                 }
             }
+            if choice == .off {
+                Section {
+                    Picker("代わりの日", selection: $makeupChoice) {
+                        Text("なし").tag(MakeupChoice.none)
+                        Text("未定").tag(MakeupChoice.pending)
+                        Text("日付を指定").tag(MakeupChoice.date)
+                    }
+                    .pickerStyle(.segmented)
+                    if makeupChoice == .date {
+                        DatePicker("補講の日", selection: $makeupDate, displayedComponents: .date)
+                            .datePickerStyle(.graphical)
+                            .environment(\.locale, Locale(identifier: "ja_JP"))
+                        ForEach(periods, id: \.number) { period in
+                            Button {
+                                if !makeupPeriods.insert(period.number).inserted { makeupPeriods.remove(period.number) }
+                            } label: {
+                                HStack {
+                                    Text("\(period.number)コマ").foregroundStyle(Color.primary)
+                                    Text("\(period.start)–\(period.end)").foregroundStyle(.secondary)
+                                    Spacer()
+                                    if makeupPeriods.contains(period.number) {
+                                        Image(systemName: "checkmark").fontWeight(.semibold)
+                                    }
+                                }
+                            }
+                        }
+                        TextField("教室（空欄なら元の教室）", text: $makeupRoom)
+                    }
+                } header: {
+                    Text("代わりの日（補講）")
+                } footer: {
+                    switch makeupChoice {
+                    case .none: Text("補講の予定がない場合はこのままにします。")
+                    case .pending: Text("「補講未定」として表示します。決まったらここで日付を指定してください。")
+                    case .date: Text("選んだ日のコマに、補講として表示します。")
+                    }
+                }
+            }
             if canNarrow {
                 Section {
                     Toggle("この日の全コマ（\(siblingPeriods.count)コマ）に適用", isOn: $wholeDay)
                 } footer: {
-                    Text("オフにすると \(session.period ?? 0)限だけを変更します。")
+                    Text("オフにすると \(session.period ?? 0)コマだけを変更します。")
                 }
             }
         }
@@ -209,7 +283,7 @@ private struct ExtraDetailForm: View {
             }
         ) {
             Section {
-                LabeledContent("時間", value: (session.period.map { "\($0)限 " } ?? "") + "\(session.start)–\(session.end)")
+                LabeledContent("時間", value: (session.period.map { "\($0)コマ " } ?? "") + "\(session.start)–\(session.end)")
                 if let room = session.room { LabeledContent("教室", value: room) }
             } footer: {
                 Text("「削除」でこの補講の登録を取り消します。")
@@ -243,7 +317,7 @@ private struct ExtraFields: View {
             }
             TextField("教室（任意）", text: $room)
             Picker("コマ", selection: $period) {
-                ForEach(periods, id: \.number) { Text("\($0.number)限 \($0.start)–\($0.end)").tag($0.number) }
+                ForEach(periods, id: \.number) { Text("\($0.number)コマ \($0.start)–\($0.end)").tag($0.number) }
             }
         }
     }

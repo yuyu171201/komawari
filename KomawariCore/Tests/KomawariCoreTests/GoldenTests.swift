@@ -13,6 +13,8 @@ struct GoldenSession: Decodable, Equatable {
     var room: String?
     var status: String
     var original_room: String?
+    var makeup_date: String?
+    var makeup_pending: Bool
 }
 
 struct GoldenDay: Decodable, Equatable {
@@ -32,7 +34,8 @@ struct GoldenDay: Decodable, Equatable {
         classes = day.classes.map {
             GoldenSession(
                 name: $0.name, period: $0.period, start: $0.start.description, end: $0.end.description,
-                room: $0.room, status: $0.status.rawValue, original_room: $0.originalRoom)
+                room: $0.room, status: $0.status.rawValue, original_room: $0.originalRoom,
+                makeup_date: $0.makeupDate?.description, makeup_pending: $0.makeupPending)
         }
     }
 }

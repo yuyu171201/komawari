@@ -414,6 +414,11 @@ private struct SessionCard: View {
                     .strikethrough()
                     .foregroundStyle(Theme.muted)
             }
+            if let makeup = session.makeupDate {
+                Text("補講 \(makeup.month)/\(makeup.day)").font(.caption2.bold())
+            } else if session.makeupPending {
+                Text("補講未定").font(.caption2.bold())
+            }
             if let badge = Theme.badge(session.status) {
                 Spacer(minLength: 0)
                 Text(badge)

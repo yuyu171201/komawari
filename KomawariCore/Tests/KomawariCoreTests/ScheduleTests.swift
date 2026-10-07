@@ -6,7 +6,7 @@ import Testing
 func date(_ text: String) -> CalendarDate { CalendarDate(text)! }
 func time(_ text: String) -> ClockTime { ClockTime(text)! }
 
-/// テスト用の時間割。月2限 Java演習、水3限 機械学習、金 18:10〜 ゼミ。
+/// テスト用の時間割。月2コマ Java演習、水3コマ 機械学習、金 18:10〜 ゼミ。
 func makeTimetable(
     exceptions: [ScheduleException] = [],
     courses: [Course]? = nil,
@@ -117,7 +117,7 @@ func names(_ day: DayPlan) -> [String] { day.classes.map { "\($0.name):\($0.stat
     @Test func roomChangeAndSingleClassOff() throws {
         let schedule = try Schedule(makeTimetable(exceptions: [
             .classChange(date: date("2026-12-02"), className: "機械学習", period: nil, .room("B202")),
-            .classChange(date: date("2026-12-09"), className: "機械学習", period: 3, .off),
+            .classChange(date: date("2026-12-09"), className: "機械学習", period: 3, .off()),
         ]))
         let changed = try #require(schedule.day(date("2026-12-02")).classes.first)
         #expect(changed.status == .roomChanged)
@@ -255,7 +255,7 @@ func names(_ day: DayPlan) -> [String] { day.classes.map { "\($0.name):\($0.stat
             .dayOff(date: date("2026-11-04"), off: true),
             .extra(date: date("2026-11-14"), ExtraClass(name: "A", slot: .period(1))),
             .classChange(date: date("2026-10-12"), className: "A", period: 1, .room("B202")),
-            .classChange(date: date("2026-10-19"), className: "A", period: nil, .off),
+            .classChange(date: date("2026-10-19"), className: "A", period: nil, .off()),
         ])
     }
 

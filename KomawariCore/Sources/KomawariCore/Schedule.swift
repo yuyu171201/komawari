@@ -12,6 +12,7 @@ public enum TimetableError: Error, Hashable, Sendable, CustomStringConvertible {
     case duplicateDayOff(CalendarDate)
     case offAndSwap(CalendarDate)
     case noSuchClass(date: CalendarDate, name: String, period: Int?)
+    case invalidMakeup(CalendarDate)
 
     public var description: String {
         switch self {
@@ -38,8 +39,10 @@ public enum TimetableError: Error, Hashable, Sendable, CustomStringConvertible {
         case .offAndSwap(let date):
             return "\(date) に `off: true` と `as_weekday` の両方があります"
         case .noSuchClass(let date, let name, let period):
-            let target = period.map { "\(name)（\($0)限）" } ?? name
+            let target = period.map { "\(name)（\($0)コマ）" } ?? name
             return "\(date) に「\(target)」の授業はありません"
+        case .invalidMakeup(let date):
+            return "\(date) の補講のコマを1つ以上、重複なく選んでください"
         }
     }
 }
@@ -71,6 +74,10 @@ public struct Session: Hashable, Sendable {
     public let status: Status
     /// 教室変更前の教室。
     public let originalRoom: String?
+    /// 休講の代わりの日。
+    public var makeupDate: CalendarDate? = nil
+    /// 休講の代わりの日が未定。
+    public var makeupPending = false
 }
 
 /// 1日分の展開結果。
@@ -97,6 +104,8 @@ public struct Schedule: Sendable {
     public let timetable: Timetable
     private let courses: [ResolvedCourse]
     private let rules: [CalendarDate: DayRules]
+    /// 休講の代わりの日（`Makeup.scheduled`）から作った補講。日付ごと。
+    private let makeups: [CalendarDate: [ResolvedCourse]]
 
     private struct ResolvedCourse: Sendable {
         var name: String
@@ -174,8 +183,10 @@ public struct Schedule: Sendable {
         }
 
         var rules: [CalendarDate: DayRules] = [:]
+        var dateOrder: [CalendarDate] = []
         for (index, exception) in timetable.exceptions.enumerated() {
             let place = "exceptions[\(index)]"
+            if rules[exception.date] == nil { dateOrder.append(exception.date) }
             var day = rules[exception.date] ?? DayRules()
             switch exception {
             case .swap(let date, let asWeekday):
@@ -192,6 +203,14 @@ public struct Schedule: Sendable {
                     start: start, end: end, room: extra.room, span: nil))
             case .classChange(_, let name, let period, let change):
                 if let period, periods[period] == nil { throw TimetableError.unknownPeriod(period, at: place) }
+                if case .off(.scheduled(_, let numbers, _)) = change {
+                    guard !numbers.isEmpty, Set(numbers).count == numbers.count else {
+                        throw TimetableError.invalidMakeup(exception.date)
+                    }
+                    for number in numbers where periods[number] == nil {
+                        throw TimetableError.unknownPeriod(number, at: place)
+                    }
+                }
                 day.changes.append(Change(name: name, period: period, change: change))
             }
             if day.off == true, day.asWeekday != nil { throw TimetableError.offAndSwap(exception.date) }
@@ -199,20 +218,34 @@ public struct Schedule: Sendable {
         }
 
         // 教室変更などの対象が、その日に実際にある授業かを確かめる（授業名の打ち間違い対策）
-        for (date, day) in rules.sorted(by: { $0.key < $1.key }) {
+        var makeups: [CalendarDate: [ResolvedCourse]] = [:]
+        for date in dateOrder {
+            guard let day = rules[date] else { continue }
             let weekday = day.asWeekday ?? date.weekday
             let inTerm = timetable.term.contains(date)
             for change in day.changes {
-                let hit = inTerm && courses.contains {
+                let target = inTerm ? courses.first {
                     $0.weekday == weekday && $0.runs(on: date) && change.targets($0)
+                } : nil
+                guard let target else {
+                    throw TimetableError.noSuchClass(date: date, name: change.name, period: change.period)
                 }
-                if !hit { throw TimetableError.noSuchClass(date: date, name: change.name, period: change.period) }
+                // 代わりの日が決まっていれば、その日の補講として載せる
+                if case .off(.scheduled(let makeupDate, let numbers, let room)) = change.change {
+                    for number in numbers {
+                        guard let period = periods[number] else { continue }
+                        makeups[makeupDate, default: []].append(ResolvedCourse(
+                            name: change.name, weekday: nil, period: number,
+                            start: period.start, end: period.end, room: room ?? target.room, span: nil))
+                    }
+                }
             }
         }
 
         self.timetable = timetable
         self.courses = courses
         self.rules = rules
+        self.makeups = makeups
     }
 
     /// 日付 `date` の授業を、例外と祝日を反映して展開する。
@@ -239,10 +272,14 @@ public struct Schedule: Sendable {
                 var status: Status = swapped ? .swapped : .normal
                 var room = course.room
                 var originalRoom: String?
+                var makeupDate: CalendarDate?
+                var makeupPending = false
                 for change in rule?.changes ?? [] where change.targets(course) {
                     switch change.change {
-                    case .off:
+                    case .off(let makeup):
                         status = .off
+                        makeupPending = makeup == .pending
+                        if case .scheduled(let date, _, _) = makeup { makeupDate = date } else { makeupDate = nil }
                     case .room(let newRoom):
                         guard newRoom != course.room else { continue }
                         room = newRoom
@@ -253,12 +290,13 @@ public struct Schedule: Sendable {
                 if offReason != nil { status = .off }
                 sessions.append(Session(
                     date: date, name: course.name, start: course.start, end: course.end,
-                    period: course.period, room: room, status: status, originalRoom: originalRoom))
+                    period: course.period, room: room, status: status, originalRoom: originalRoom,
+                    makeupDate: makeupDate, makeupPending: makeupPending))
             }
         }
 
         // 補講は日付を明示した追加なので、休みの日や学期外でもそのまま載せる
-        for extra in rule?.extras ?? [] {
+        for extra in (rule?.extras ?? []) + (makeups[date] ?? []) {
             sessions.append(Session(
                 date: date, name: extra.name, start: extra.start, end: extra.end,
                 period: extra.period, room: extra.room, status: .extra, originalRoom: nil))
@@ -291,7 +329,7 @@ public struct Schedule: Sendable {
 
     /// 学期の全日付（学期外に補講があればその日まで）を走査して展開する。
     public func term() -> [DayPlan] {
-        let extraDates = rules.filter { !$0.value.extras.isEmpty }.map(\.key)
+        let extraDates = rules.filter { !$0.value.extras.isEmpty }.map(\.key) + makeups.keys
         let start = ([timetable.term.start] + extraDates).min()!
         let end = ([timetable.term.end] + extraDates).max()!
         return (start.ordinal...end.ordinal).map { day(CalendarDate(ordinal: $0)) }
@@ -332,7 +370,13 @@ public struct Schedule: Sendable {
                 case .roomChanged:
                     items.append("\(weekday)の\(session.name)が\(session.room ?? "")に教室変更")
                 case .off where day.status != .off:
-                    items.append("\(weekday)の\(session.name)が休講")
+                    if let makeup = session.makeupDate {
+                        items.append("\(weekday)の\(session.name)が休講（補講 \(shortDate(makeup))）")
+                    } else if session.makeupPending {
+                        items.append("\(weekday)の\(session.name)が休講（補講未定）")
+                    } else {
+                        items.append("\(weekday)の\(session.name)が休講")
+                    }
                 default:
                     break
                 }

@@ -108,6 +108,13 @@ def test_invalid_classes(make_cfg, classes):
         [{"date": "2027-02-03", "class": "機械学習", "room": "B"}],  # 学期外
         [{"date": "2026-10-21", "extra": {"name": "X", "weekday": 0, "period": 1}}],
         [{"date": "2026-10-21", "extra": {"name": "X", "period": 1, "term": 3}}],
+        # makeup は休講の授業にだけ付けられる
+        [{"date": "2026-10-21", "class": "機械学習", "room": "B", "makeup": "pending"}],
+        [{"date": "2026-10-21", "class": "機械学習", "off": True, "makeup": "later"}],
+        [{"date": "2026-10-21", "class": "機械学習", "off": True, "makeup": {"date": "2026-10-24"}}],
+        [{"date": "2026-10-21", "class": "機械学習", "off": True, "makeup": {"date": "2026-10-24", "periods": []}}],
+        [{"date": "2026-10-21", "class": "機械学習", "off": True, "makeup": {"date": "2026-10-24", "periods": [9]}}],
+        [{"date": "2026-10-21", "class": "機械学習", "off": True, "makeup": {"date": "2026-10-24", "periods": [1, 1]}}],
     ],
 )
 def test_invalid_exceptions(make_cfg, exceptions):

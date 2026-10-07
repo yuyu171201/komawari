@@ -65,6 +65,10 @@ exceptions:
   - {date: 2026-08-10, extra: {name: 再試験, period: 3, room: C3}}
   - {date: 2026-03-30, extra: {name: ガイダンス, start: "13:00", end: "14:00"}}
   - {date: 2026-07-18, off: true}
+  - {date: 2026-05-13, class: 実験, off: true, makeup: {date: 2026-05-16, periods: [1, 2]}}
+  - {date: 2026-05-20, class: 実験, period: 3, off: true, makeup: pending}
+  - {date: 2026-05-12, class: 英語, off: true, makeup: {date: 2026-08-12, periods: [4], room: Z1}}
+  - {date: 2026-06-16, class: 英語, off: true, makeup: {date: 2026-06-15, periods: [2]}}
 """
 
 
@@ -84,6 +88,8 @@ def day_json(day) -> dict:
                 "room": s.room,
                 "status": s.status,
                 "original_room": s.original_room,
+                "makeup_date": s.makeup_date.isoformat() if s.makeup_date else None,
+                "makeup_pending": s.makeup_pending,
             }
             for s in day.classes
         ],

@@ -136,6 +136,8 @@ def _session_json(s: Session) -> dict:
         "room": s.room,
         "status": s.status,
         "original_room": s.original_room,
+        "makeup_date": s.makeup_date.isoformat() if s.makeup_date else None,
+        "makeup_pending": s.makeup_pending,
     }
 
 

@@ -58,11 +58,15 @@ exceptions:   # 1行1件。同じ日付に複数行書いてよい
   - {date: 2026-11-14, extra: {name: 機械学習, period: 4, room: A101}}  # 補講
   - {date: 2026-12-02, class: 機械学習, room: B202}   # 教室変更（period で絞り込み可）
   - {date: 2026-12-09, class: 機械学習, off: true}    # その授業だけ休講
+  # 休講の代わりの日（補講）。その日のコマに補講として表示される
+  - {date: 2026-12-16, class: 機械学習, off: true, makeup: {date: 2026-12-19, periods: [1, 2]}}
+  - {date: 2026-12-23, class: 機械学習, off: true, makeup: pending}   # 代わりの日は未定
 ```
 
 - 授業に `term` を書くと `terms` の期間だけ開講する。振替の日は、その日付が属するタームの授業が出る
 - 日本の祝日は `jpholiday` で自動的に休講になる。祝日に授業がある日は `off: false` か `as_weekday` を書く
 - 補講（`extra`）は日付を明示した追加なので、休みの日や学期外でも表示・出力される
+- `makeup` の教室は `room` で指定でき、省略すると元の授業の教室になる
 - `class` で指定した授業がその日に無い場合は、打ち間違いとして読み込みエラーになる
 
 ## Swift 版のロジック（KomawariCore）

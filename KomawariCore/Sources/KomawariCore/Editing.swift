@@ -1,7 +1,7 @@
 /// 画面から登録する、ある授業のその日の扱い。
 public enum ClassState: Hashable, Sendable {
     case normal
-    case off
+    case off(makeup: Makeup = .none)
     case room(String)
 }
 
@@ -24,7 +24,7 @@ extension Timetable {
         for case .classChange(date, name, let target, let change) in exceptions
         where target == nil || target == period {
             switch change {
-            case .off: return .off
+            case .off(let makeup): return .off(makeup: makeup)
             case .room(let room): state = .room(room)
             }
         }
@@ -64,8 +64,11 @@ extension Timetable {
             }
             if whole { continue }
             if target == nil {
-                carried += siblingPeriods.filter { $0 != period }.map {
-                    .classChange(date: date, className: name, period: $0, change)
+                // 代わりの日は全コマ分をまとめて持っているので、付け直すときは最初の1コマにだけ残す
+                var remaining = change
+                for sibling in siblingPeriods where sibling != period {
+                    carried.append(.classChange(date: date, className: name, period: sibling, remaining))
+                    if case .off(.scheduled) = remaining { remaining = .off() }
                 }
             } else if target != period {
                 kept.append(exception)
@@ -76,7 +79,8 @@ extension Timetable {
         let target = whole ? nil : period
         switch state {
         case .normal: break
-        case .off: exceptions.append(.classChange(date: date, className: name, period: target, .off))
+        case .off(let makeup):
+            exceptions.append(.classChange(date: date, className: name, period: target, .off(makeup: makeup)))
         case .room(let room): exceptions.append(.classChange(date: date, className: name, period: target, .room(room)))
         }
     }
@@ -155,5 +159,83 @@ extension Timetable {
                 return course.slot == .period(period)
             }
         }
+    }
+}
+
+/// 授業が開かれる曜日とコマ。
+public struct CourseSlot: Hashable, Sendable {
+    /// 0=月 ... 6=日。
+    public var weekday: Int
+    public var slot: Slot
+
+    public init(weekday: Int, slot: Slot) {
+        self.weekday = weekday
+        self.slot = slot
+    }
+}
+
+/// 「同一の授業」をまとめたもの。名前・教室・開講期間が同じ授業を1つとして扱い、
+/// 2コマ続きや、別の曜日にもある授業をまとめて編集できるようにする。
+public struct CourseGroup: Hashable, Sendable {
+    public var name: String
+    public var room: String?
+    /// `Timetable.terms` のキー。nil は学期全体。
+    public var term: String?
+    public var slots: [CourseSlot]
+
+    public init(name: String, room: String? = nil, term: String? = nil, slots: [CourseSlot] = []) {
+        self.name = name
+        self.room = room
+        self.term = term
+        self.slots = slots
+    }
+
+    func contains(_ course: Course) -> Bool {
+        course.name == name && course.room == room && course.term == term
+    }
+}
+
+extension Timetable {
+    /// 授業を「同一の授業」ごとにまとめた一覧（最初に出てくる順）。
+    public var courseGroups: [CourseGroup] {
+        var groups: [CourseGroup] = []
+        for course in courses {
+            let slot = CourseSlot(weekday: course.weekday, slot: course.slot)
+            if let index = groups.firstIndex(where: { $0.contains(course) }) {
+                groups[index].slots.append(slot)
+            } else {
+                groups.append(CourseGroup(name: course.name, room: course.room, term: course.term, slots: [slot]))
+            }
+        }
+        return groups
+    }
+
+    /// まとまり単位で授業を追加・変更・削除する。
+    ///
+    /// - Parameters:
+    ///   - old: 置き換える前のまとまり。nil なら追加。
+    ///   - new: 置き換えた後のまとまり。nil なら削除。
+    ///
+    /// 名前だけを変えた場合は、その授業に登録していた休講・教室変更も新しい名前に付け替える。
+    /// 曜日やコマを変えて対象を失った変更は取り除く。
+    public mutating func replaceGroup(_ old: CourseGroup?, with new: CourseGroup?) {
+        if let old { courses.removeAll { old.contains($0) } }
+        if let new {
+            var seen = Set<CourseSlot>()
+            for slot in new.slots where seen.insert(slot).inserted {
+                courses.append(Course(
+                    name: new.name, weekday: slot.weekday, slot: slot.slot, room: new.room, term: new.term))
+            }
+        }
+
+        if let old, let new, old.name != new.name, !courses.contains(where: { $0.name == old.name }) {
+            exceptions = exceptions.map { exception in
+                guard case .classChange(let date, old.name, let period, let change) = exception else {
+                    return exception
+                }
+                return .classChange(date: date, className: new.name, period: period, change)
+            }
+        }
+        removeOrphanedClassChanges()
     }
 }

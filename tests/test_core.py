@@ -241,3 +241,42 @@ def test_summary_mentions_a_multi_period_class_once(make_cfg):
     ]
     cfg = make_cfg([{"date": "2026-10-08", "class": "実験", "off": True}], classes=classes)
     assert week_summary(week_view(cfg, date(2026, 10, 8))) == ["木曜の実験が休講"]
+
+
+def test_cancelled_class_with_makeup_date(make_cfg):
+    classes = [
+        {"name": "実験", "weekday": 3, "period": 3, "room": "E1"},
+        {"name": "実験", "weekday": 3, "period": 4, "room": "E1"},
+    ]
+    makeup = {"date": "2026-10-24", "periods": [1, 2]}
+    cfg = make_cfg(
+        [{"date": "2026-10-08", "class": "実験", "off": True, "makeup": makeup}], classes=classes
+    )
+    cancelled = expand_day(cfg, date(2026, 10, 8))
+    assert [(s.status, s.makeup_date) for s in cancelled.classes] == [("off", date(2026, 10, 24))] * 2
+
+    held = expand_day(cfg, date(2026, 10, 24))  # 土曜。教室は元の授業のもの
+    assert [(s.name, s.period, s.room, s.status) for s in held.classes] == [
+        ("実験", 1, "E1", "extra"), ("実験", 2, "E1", "extra"),
+    ]
+    assert week_summary(week_view(cfg, date(2026, 10, 8))) == ["木曜の実験が休講（補講 10/24(土)）"]
+    assert week_summary(week_view(cfg, date(2026, 10, 24))) == ["土曜に補講「実験」"]
+
+
+def test_makeup_room_and_pending(make_cfg):
+    cfg = make_cfg(
+        [
+            {
+                "date": "2026-10-07", "class": "機械学習", "off": True,
+                "makeup": {"date": "2027-02-03", "periods": [1], "room": "Z9"},
+            },
+            {"date": "2026-10-14", "class": "機械学習", "off": True, "makeup": "pending"},
+        ]
+    )
+    (held,) = expand_day(cfg, date(2027, 2, 3)).classes  # 学期外でも補講は載る
+    assert (held.room, held.status) == ("Z9", "extra")
+    assert list(expand_term(cfg))[-1].date == date(2027, 2, 3)
+
+    (pending,) = expand_day(cfg, date(2026, 10, 14)).classes
+    assert (pending.status, pending.makeup_pending, pending.makeup_date) == ("off", True, None)
+    assert "水曜の機械学習が休講（補講未定）" in week_summary(week_view(cfg, date(2026, 10, 14)))

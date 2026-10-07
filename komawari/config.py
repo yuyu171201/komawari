@@ -41,6 +41,15 @@ class Course:
 
 
 @dataclass(frozen=True)
+class Makeup:
+    """休講にした授業の代わりの日（補講）。"""
+
+    date: date
+    periods: tuple[int, ...]
+    room: str | None = None  # None なら元の授業の教室
+
+
+@dataclass(frozen=True)
 class ClassChange:
     """特定の日の特定の授業に対する変更（教室変更・その授業だけ休講）。"""
 
@@ -48,6 +57,8 @@ class ClassChange:
     period: int | None = None
     room: str | None = None
     off: bool = False
+    makeup: Makeup | None = None  # 休講の代わりの日が決まっている場合
+    makeup_pending: bool = False  # 代わりの日が未定
 
 
 @dataclass
@@ -69,6 +80,8 @@ class Config:
     periods: dict[int, Period]
     classes: list[Course]
     exceptions: dict[date, DayException]
+    # 休講の代わりの日（`makeup`）から作った補講。日付ごと
+    makeups: dict[date, list[Course]] = field(default_factory=dict)
 
 
 class _Loader(yaml.SafeLoader):
@@ -213,7 +226,7 @@ def _parse_exception(
         if course.room is not None:
             entry["extra"]["room"] = course.room
     elif "class" in keys:
-        _reject_unknown(raw, {"date", "class", "period", "room", "off"}, where)
+        _reject_unknown(raw, {"date", "class", "period", "room", "off", "makeup"}, where)
         period = None
         if "period" in raw:
             period = _parse_period_ref(raw["period"], periods, where)
@@ -221,11 +234,20 @@ def _parse_exception(
         room = None if raw.get("room") is None else str(raw["room"])
         if off == (room is not None):
             raise ConfigError(f"{where}: `class` には `room` か `off: true` のどちらか一方を指定してください")
-        exc.changes.append(ClassChange(str(raw["class"]), period, room, off))
+        makeup, pending = _parse_makeup(raw.get("makeup"), periods, f"{where}.makeup")
+        if not off and "makeup" in raw:
+            raise ConfigError(f"{where}: `makeup` は `off: true` の授業にだけ指定できます")
+        exc.changes.append(ClassChange(str(raw["class"]), period, room, off, makeup, pending))
         entry["class"] = str(raw["class"])
         if period is not None:
             entry["period"] = period
         entry |= {"off": True} if off else {"room": room}
+        if pending:
+            entry["makeup"] = "pending"
+        elif makeup is not None:
+            entry["makeup"] = {"date": makeup.date.isoformat(), "periods": list(makeup.periods)}
+            if makeup.room is not None:
+                entry["makeup"]["room"] = makeup.room
     elif "as_weekday" in keys:
         _reject_unknown(raw, {"date", "as_weekday"}, where)
         if exc.as_weekday is not None:
@@ -246,6 +268,25 @@ def _parse_exception(
     if exc.off and exc.as_weekday is not None:
         raise ConfigError(f"{where}: {d} に `off: true` と `as_weekday` の両方があります")
     exc.entries.append(entry)
+
+
+def _parse_makeup(raw: Any, periods: dict[int, Period], where: str) -> tuple[Makeup | None, bool]:
+    """`makeup: pending`（未定）か `makeup: {date, periods, room}` を読む。"""
+    if raw is None:
+        return None, False
+    if raw == "pending":
+        return None, True
+    raw = _mapping(raw, where)
+    _reject_unknown(raw, {"date", "periods", "room"}, where)
+    d = _parse_date(_require(raw, "date", where), f"{where}.date")
+    numbers = _sequence(_require(raw, "periods", where), f"{where}.periods")
+    if not numbers:
+        raise ConfigError(f"{where}: `periods` にコマ番号を1つ以上指定してください")
+    numbers = tuple(_parse_period_ref(n, periods, where) for n in numbers)
+    if len(set(numbers)) != len(numbers):
+        raise ConfigError(f"{where}: `periods` に同じコマが重複しています")
+    room = None if raw.get("room") is None else str(raw["room"])
+    return Makeup(d, numbers, room), False
 
 
 def normalize_exception(raw: Any, periods: dict[int, Period], where: str = "exception") -> dict:
@@ -270,15 +311,25 @@ def _check_changes(cfg: Config) -> None:
         weekday = d.weekday() if exc.as_weekday is None else exc.as_weekday
         in_term = cfg.term_start <= d <= cfg.term_end
         for ch in exc.changes:
-            hit = in_term and any(
-                c.weekday == weekday
+            targets = [
+                c
+                for c in cfg.classes
+                if in_term
+                and c.weekday == weekday
                 and c.runs_on(d)
                 and c.name == ch.name
                 and (ch.period is None or c.period == ch.period)
-                for c in cfg.classes
-            )
+            ]
+            hit = bool(targets)
+            if ch.makeup is not None and hit:
+                room = ch.makeup.room if ch.makeup.room is not None else targets[0].room
+                for number in ch.makeup.periods:
+                    p = cfg.periods[number]
+                    cfg.makeups.setdefault(ch.makeup.date, []).append(
+                        Course(ch.name, p.start, p.end, None, number, room)
+                    )
             if not hit:
-                target = ch.name if ch.period is None else f"{ch.name}（{ch.period}限）"
+                target = ch.name if ch.period is None else f"{ch.name}（{ch.period}コマ）"
                 raise ConfigError(f"exceptions: {d} に「{target}」の授業はありません")
 
 

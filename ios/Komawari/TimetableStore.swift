@@ -74,6 +74,15 @@ extension CalendarDate {
     }
 }
 
+extension CalendarDate {
+    /// カレンダーUI（DatePicker）に渡す Date。端末の時刻でのその日の正午。
+    var pickerDate: Date {
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = .current
+        return calendar.date(from: DateComponents(year: year, month: month, day: day, hour: 12)) ?? .now
+    }
+}
+
 extension ClockTime {
     /// 端末の時刻での現在時刻。
     static func now(at now: Date = .now) -> ClockTime {

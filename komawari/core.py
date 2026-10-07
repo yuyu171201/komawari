@@ -41,6 +41,8 @@ class Session:
     room: str | None
     status: str  # normal / swapped / off / extra / room_changed
     original_room: str | None = None  # 教室変更前の教室
+    makeup_date: date | None = None  # 休講の代わりの日
+    makeup_pending: bool = False  # 休講の代わりの日が未定
 
 
 @dataclass(frozen=True)
@@ -82,21 +84,29 @@ def expand_day(cfg: Config, d: date) -> Day:
                 continue
             status = SWAPPED if swapped else NORMAL
             room, original_room = c.room, None
+            makeup_date, makeup_pending = None, False
             for ch in exc.changes if exc else ():
                 if ch.name != c.name or (ch.period is not None and ch.period != c.period):
                     continue
                 if ch.off:
                     status = OFF
+                    makeup_date = ch.makeup.date if ch.makeup else None
+                    makeup_pending = ch.makeup_pending
                 elif ch.room != c.room:
                     room, original_room = ch.room, c.room
                     if status != OFF:
                         status = ROOM_CHANGED
             if off_reason:
                 status = OFF
-            sessions.append(Session(d, c.name, c.start, c.end, c.period, room, status, original_room))
+            sessions.append(
+                Session(
+                    d, c.name, c.start, c.end, c.period, room, status, original_room,
+                    makeup_date, makeup_pending,
+                )
+            )
 
     # 補講は日付を明示した追加なので、休みの日や学期外でもそのまま載せる
-    for c in exc.extras if exc else ():
+    for c in [*(exc.extras if exc else ()), *cfg.makeups.get(d, ())]:
         sessions.append(Session(d, c.name, c.start, c.end, c.period, c.room, EXTRA))
 
     sessions.sort(key=lambda s: (s.start, s.end, s.name))
@@ -123,7 +133,7 @@ def week_view(cfg: Config, d: date) -> list[Day]:
 
 def expand_term(cfg: Config) -> Iterator[Day]:
     """学期の全日付（学期外に補講があればその日まで）を走査して展開する。"""
-    extra_dates = [d for d, e in cfg.exceptions.items() if e.extras]
+    extra_dates = [d for d, e in cfg.exceptions.items() if e.extras] + list(cfg.makeups)
     start = min([cfg.term_start, *extra_dates])
     end = max([cfg.term_end, *extra_dates])
     for i in range((end - start).days + 1):
@@ -162,7 +172,12 @@ def week_summary(days: list[Day]) -> list[str]:
             elif s.status == ROOM_CHANGED:
                 items.append(f"{wd}の{s.name}が{s.room}に教室変更")
             elif s.status == OFF and day.status != OFF:
-                items.append(f"{wd}の{s.name}が休講")
+                if s.makeup_date:
+                    items.append(f"{wd}の{s.name}が休講（補講 {_short_date(s.makeup_date)}）")
+                elif s.makeup_pending:
+                    items.append(f"{wd}の{s.name}が休講（補講未定）")
+                else:
+                    items.append(f"{wd}の{s.name}が休講")
     # 同じ授業が1日に複数コマあると同じ文が並ぶので、1つにまとめる
     return list(dict.fromkeys(items))
 

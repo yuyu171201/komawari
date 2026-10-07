@@ -45,7 +45,7 @@ def _event(day: Day, s: Session, stamp: str, seen: set[str]) -> list[str]:
     summary = s.name
     notes = []
     if s.period is not None:
-        notes.append(f"{s.period}限")
+        notes.append(f"{s.period}コマ")
     if swapped:
         summary += "（振替）"
         notes.append(

@@ -40,6 +40,8 @@ def test_week_returns_days_with_status(client):
             "room": "情報1号館",
             "status": "swapped",
             "original_room": None,
+            "makeup_date": None,
+            "makeup_pending": False,
         }
     ]
 

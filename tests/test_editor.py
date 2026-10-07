@@ -152,3 +152,21 @@ def test_awkward_text_round_trips(path):
     assert (course.name, course.room, f"{course.start:%H:%M}") == (extra["name"], "off", "18:10")
     edit_exceptions(path, remove=[entry_id(added)])
     assert entry_id(added) not in ids(path)
+
+
+def test_makeup_round_trips_through_the_file(path):
+    entry = {
+        "date": "2026-12-02", "class": "機械学習", "off": True,
+        "makeup": {"date": "2026-12-05", "periods": [1, 3], "room": "B202"},
+    }
+    (added,) = edit_exceptions(path, add=[entry, ])
+    assert added == entry
+    cfg = load_config(path)
+    assert [c.period for c in cfg.makeups[added_date(added["makeup"])]] == [1, 3]
+
+    (pending,) = edit_exceptions(
+        path, add=[{"date": "2026-12-09", "class": "機械学習", "off": True, "makeup": "pending"}]
+    )
+    assert pending["makeup"] == "pending"
+    edit_exceptions(path, remove=[entry_id(added), entry_id(pending)])
+    assert load_config(path).makeups == {}
