@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import json
 import os
 import sys
 from datetime import date
@@ -24,6 +25,7 @@ from .core import (
     week_summary,
     week_view,
 )
+from .export import export_json
 from .ics import build_ics
 
 DEFAULT_CONFIG = "timetable.yaml"
@@ -48,6 +50,9 @@ def main(argv: list[str] | None = None) -> int:
     ics = sub.add_parser("ics", help=".ics をファイルに出力する")
     ics.add_argument("-o", "--output", default="timetable.ics", help="出力先（- で標準出力）")
 
+    export = sub.add_parser("json", help="iPhone アプリ用の JSON をファイルに出力する")
+    export.add_argument("-o", "--output", default="timetable.json", help="出力先（- で標準出力）")
+
     serve = sub.add_parser("serve", help="週ビューと .ics を配信するサーバーを起動する")
     serve.add_argument("--host", default="127.0.0.1")
     serve.add_argument("--port", type=int, default=8000)
@@ -67,6 +72,19 @@ def main(argv: list[str] | None = None) -> int:
     except (ConfigError, OSError) as e:
         print(f"komawari: {args.config}: {e}", file=sys.stderr)
         return 1
+
+    if args.command == "json":
+        try:
+            text = json.dumps(export_json(args.config), ensure_ascii=False, indent=2) + "\n"
+        except (ConfigError, OSError) as e:
+            print(f"komawari: {args.config}: {e}", file=sys.stderr)
+            return 1
+        if args.output == "-":
+            sys.stdout.write(text)
+        else:
+            Path(args.output).write_text(text, encoding="utf-8")
+            print(f"{args.output} に書き出しました")
+        return 0
 
     if args.command == "week":
         print(format_week(cfg, args.date or date.today(), today=date.today()))

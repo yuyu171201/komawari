@@ -1,0 +1,5 @@
+# 自分の時間割（komawari json で書き出したもの）はリポジトリに含めない
+Komawari/Resources/timetable.json
+build/
+xcuserdata/
+*.xcuserstate

@@ -65,6 +65,30 @@ exceptions:   # 1行1件。同じ日付に複数行書いてよい
 - 補講（`extra`）は日付を明示した追加なので、休みの日や学期外でも表示・出力される
 - `class` で指定した授業がその日に無い場合は、打ち間違いとして読み込みエラーになる
 
+## Swift 版のロジック（KomawariCore）
+
+iPhone アプリに向けて、展開ロジックを Swift パッケージ [KomawariCore](KomawariCore) に移植してある。サーバーなしで動かすためのもので、祝日判定も内蔵している（2020年以降）。
+
+```bash
+KomawariCore/Scripts/test.sh                          # Swift のテスト
+uv run python KomawariCore/Scripts/make_golden.py     # Python 版から照合データを作り直す
+```
+
+テストは、Python 版が書き出した結果（全日付の展開・全週のサマリー・`jpholiday` の祝日）と Swift 版の結果が一致することを確かめる。Python 側のロジックを変えたら照合データを作り直すこと。
+
+## iPhone アプリ（ios/）
+
+SwiftUI の週ビュー。サーバーなしで動き、授業・空きコマ・日付をタップして休講・教室変更・補講・振替を登録できる。
+
+```bash
+uv run komawari json -o ios/Komawari/Resources/timetable.json   # 自分の時間割をアプリ用に書き出す
+open ios/Komawari.xcodeproj                                      # Xcode で開いて実行
+```
+
+- `ios/Komawari/Resources/timetable.json` は `.gitignore` に入れてある。無ければ同梱のサンプルが表示される
+- アプリで一度登録すると、アプリ内に保存したデータが優先される（書き出し直した JSON は反映されない）
+- 起動引数 `-date YYYY-MM-DD` で、その日を含む週から開ける（動作確認用）
+
 ## 構成
 
 | ファイル | 役割 |
